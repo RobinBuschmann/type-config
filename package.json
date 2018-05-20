@@ -1,0 +1,21 @@
+{
+  "name": "type-config",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.1.0",
+    "@types/reflect-metadata": "^0.1.0"
+  },
+  "devDependencies": {
+    "reflect-metadata": "^0.1.12",
+    "ts-node": "^6.0.3",
+    "typescript": "^2.8.3"
+  }
+}

@@ -1,0 +1,19 @@
+# mac
+*.DS_Store
+
+# ide
+.idea
+
+# libraries
+node_modules
+
+# build files
+**/*.js
+**/*.js.map
+
+# logs
+npm-debug.log
+
+# testing
+coverage
+.nyc_output
