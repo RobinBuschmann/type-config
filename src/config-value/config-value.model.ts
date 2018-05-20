@@ -1,17 +1,9 @@
-import {ConfigOptions} from './config-options/config-options.interface';
-import {ConfigSource} from './config-source/config-source.model';
-import {TypeValidator} from './type-validator';
+import {ConfigOptions} from '../config-options/config-options.interface';
+import {ConfigSource} from '../config-source/config-source.model';
+import {TypeValidator} from '../type-validator';
+import {ConfigValueOptions} from './config-calue-options.instance';
 
-interface ConfigValueOptions {
-    target: any;
-    propertyKey: string | symbol;
-    additionalType: any;
-    configKey: string;
-    configSource: ConfigSource;
-    configOptions: ConfigOptions;
-}
-
-export class ConfigValue {
+export class ConfigValueModel {
 
     private value: any;
     private type: any;

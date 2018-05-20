@@ -4,7 +4,7 @@ import {ConfigSource} from './config-source/config-source.model';
 import {NodeEnvConfigSource} from './config-source/node-env-config-source.model';
 import {NodeArgsConfigSource} from './config-source/node-args-config-source.model';
 import {TypeValidator} from './type-validator';
-import {ConfigValue} from './config-value';
+import {ConfigValueModel} from './config-value/config-value.model';
 
 export type ValueDecorator = (envKey: string, arrayType?: any) => PropertyDecorator;
 type DecoratorMeta = [keyof TypeConfig, ConfigSource];
@@ -35,7 +35,7 @@ export class TypeConfig {
         this[key] = (
             (configKey: string, additionalType?: any): PropertyDecorator =>
                 (target, propertyKey) => {
-                    new ConfigValue(this.typeValidator, {
+                    new ConfigValueModel(this.typeValidator, {
                         propertyKey,
                         target,
                         additionalType,
