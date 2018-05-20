@@ -3,7 +3,7 @@ import {ConfigSource} from '../config-source/config-source.model';
 import {TypeValidator} from '../type-validator';
 import {ConfigValueOptions} from './config-calue-options.instance';
 
-export class ConfigValueModel {
+export class ConfigValue {
 
     private value: any;
     private type: any;
