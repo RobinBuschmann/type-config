@@ -1,4 +1,4 @@
-import {ArgsValue, EnvValue, createTypeConfig, Value} from '../src/type-config';
+import {ArgsValue, createTypeConfig, EnvValue, Value} from '../src/type-config';
 
 console.log(process.argv);
 
@@ -19,6 +19,7 @@ const DB_USER_IDS_VALUE = [1, 2];
 process.env[DB_USER_IDS_KEY] = DB_USER_IDS_VALUE.join(',');
 
 const tc = createTypeConfig({lazyLoad: false});
+
 
 class DBConfig {
 
@@ -48,10 +49,14 @@ class DBConfig {
 
     @ArgsValue('test')
     static test: string[];
+
 }
 
 
 const config = new DBConfig();
+
+// Spreading before reading
+console.log('SPREADING BEFORE', {...config});
 
 console.log('name           ', config.name, typeof config.name, eqls(config.name, DB_NAME_VALUE));
 console.log('timeout        ', config.timeout, typeof config.timeout, eqls(config.timeout, DB_TIMEOUT_VALUE));
@@ -59,10 +64,19 @@ console.log('users          ', config.users, typeof config.users, eqls(config.us
 console.log('userIds        ', config.userIds, typeof config.userIds, eqls(config.userIds, DB_USER_IDS_VALUE));
 
 console.log('static test    ', DBConfig.test, typeof DBConfig.test);
-console.log('instance test  ', config.instantTest, typeof config.instantTest);
+// console.log('instance test  ', config.instantTest, typeof config.instantTest);
 console.log('test           ', config.test, typeof config.test);
 console.log('test2          ', config.test2, typeof config.test2);
 console.log('indexes        ', config.indexes, typeof config.indexes);
+
+// Overwrite
+config.indexes = [8,9];
+DBConfig.test = ['bla'];
+console.log('indexes        ', config.indexes, typeof config.indexes);
+console.log('static test    ', DBConfig.test, typeof DBConfig.test);
+
+// Spreading after reading
+console.log('SPREADING AFTER', {...config});
 
 function eqls(a, b) {
     return JSON.stringify(a) === JSON.stringify(b);

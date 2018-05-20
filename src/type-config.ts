@@ -1,15 +1,16 @@
-import {TypeConfig, ValueDecorator} from './type-config.model';
 import {defaultConfigOptions} from './config-options/default-config-options.value';
 import {ConfigOptions} from './config-options/config-options.interface';
+import {buildDecorators} from './decorators/decorator-builder';
+import {DecoratorMeta} from './decorators/decorator-meta';
 
-const typeConfig = new TypeConfig(defaultConfigOptions);
+export const createTypeConfig = <T extends DecoratorMeta>(options: Partial<ConfigOptions<T>> = {}) =>
+buildDecorators({
+    ...defaultConfigOptions,
+    ...options,
+    decoratorMeta: {
+        ...defaultConfigOptions.decoratorMeta,
+        ...(options.decoratorMeta || {}),
+    }
+});
 
-export const Value: ValueDecorator = typeConfig.Value.bind(typeConfig);
-export const EnvValue: ValueDecorator = typeConfig.EnvValue.bind(typeConfig);
-export const ArgsValue: ValueDecorator = typeConfig.ArgsValue.bind(typeConfig);
-
-export const createTypeConfig = (options: Partial<ConfigOptions> = {}) =>
-    new TypeConfig({
-        ...defaultConfigOptions,
-        ...options,
-    });
+export const {Value, ArgsValue, EnvValue} = buildDecorators({...defaultConfigOptions});

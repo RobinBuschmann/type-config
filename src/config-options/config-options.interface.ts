@@ -1,13 +1,17 @@
 import {ConfigExists} from './config-exists.enum';
-import {ConfigSource} from '../config-source/config-source.model';
+import {DecoratorMeta} from '../decorators/decorator-meta';
 
-export interface ConfigOptions {
+export interface ConfigOptions<T extends DecoratorMeta> {
+    // TODO
     validate: boolean;
     lazyLoad: boolean;
+    // TODO
     required: boolean;
+    // TODO
     existsWhen: ConfigExists;
+    // TODO
     toBooleanWhenExists: boolean;
-    defaultConfigSource: new () => ConfigSource;
+    decoratorMeta: T;
     logger: {
         log(message: string, ...args: any[]): void;
         info(message: string, ...args: any[]): void;

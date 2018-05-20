@@ -3,6 +3,10 @@ import {ConfigSource} from '../config-source/config-source.model';
 import {TypeValidator} from '../type-validator';
 import {ConfigValueOptions} from './config-calue-options.instance';
 
+const defaultPropertyDescriptorOptions = {
+    enumerable: true
+};
+
 export class ConfigValue {
 
     private value: any;
@@ -15,7 +19,7 @@ export class ConfigValue {
     private configKey: string;
     private additionalType: any;
     private configSource: ConfigSource;
-    private configOptions: ConfigOptions;
+    private configOptions: ConfigOptions<any>;
 
     constructor(private typeValidator: TypeValidator,
                 options: ConfigValueOptions) {
@@ -33,6 +37,7 @@ export class ConfigValue {
     private initTargetPropertyGettersAndSetters() {
         const configValue = this;
         Object.defineProperty(this.target, this.propertyKey, {
+            ...defaultPropertyDescriptorOptions,
             get() {
                 if (!configValue.isLoaded) {
                     configValue.loadAndValidateValue();
@@ -44,6 +49,7 @@ export class ConfigValue {
             },
             set(value) {
                 configValue.defaultValue = value;
+                configValue.value = value;
             },
         });
     }
@@ -66,7 +72,11 @@ export class ConfigValue {
 
     private shadowValueIfNotAlreadyShadowed(instance: any) {
         if (!instance.hasOwnProperty(this.propertyKey)) {
-            Object.defineProperty(instance, this.propertyKey, {value: this.value});
+            Object.defineProperty(instance, this.propertyKey, {
+                ...defaultPropertyDescriptorOptions,
+                value: this.value,
+                writable: true,
+            });
         }
     }
 
