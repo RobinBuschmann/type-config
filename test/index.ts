@@ -1,4 +1,5 @@
 import {buildDecorators, ArgsValue, EnvValue, Value} from '../src/type-config';
+import {ConfigSource} from '../src/config-source/config-source';
 
 console.log(process.argv);
 
@@ -18,7 +19,30 @@ const DB_USER_IDS_KEY = 'DB_USER_IDS';
 const DB_USER_IDS_VALUE = [1, 2];
 process.env[DB_USER_IDS_KEY] = DB_USER_IDS_VALUE.join(',');
 
-const {ArgsValue: InstantArgsValue} = buildDecorators({lazyLoad: false});
+const {ArgsValue: InstantArgsValue, FromCustom} = buildDecorators({
+    lazyLoad: false,
+    warnOnly: true,
+    decoratorMeta: {
+        FromCustom: class extends ConfigSource {
+            config =  {
+                test: 'test',
+            };
+            getValue(key) {
+                return this.config[key];
+            }
+            hasValue(key) {
+                return !!this.config[key];
+            }
+            hasKey(key) {
+                return key in this.config;
+            }
+
+            deserialize(type: any, value: string, additionalType?: any): any {
+                return value;
+            }
+        }
+    }
+});
 
 class DBConfig {
 
@@ -49,6 +73,9 @@ class DBConfig {
     @ArgsValue('test')
     static test: string[];
 
+    @FromCustom('test')
+    fromCustom: string;
+
 }
 
 
@@ -67,6 +94,8 @@ console.log('static test    ', DBConfig.test, typeof DBConfig.test);
 console.log('test           ', config.test, typeof config.test);
 console.log('test2          ', config.test2, typeof config.test2);
 console.log('indexes        ', config.indexes, typeof config.indexes);
+
+console.log('bla            ', config.fromCustom, typeof config.fromCustom);
 
 // Overwrite
 config.indexes = [8,9];
