@@ -10,6 +10,7 @@ export class TypeValidator {
             [Boolean, value => typeof value === 'boolean'],
             [String, value => typeof value === 'string'],
             [Array, value => Array.isArray(value)],
+            // Todo@robin: Add validators
         ]);
     }
 
@@ -18,6 +19,7 @@ export class TypeValidator {
         if (validator) {
             return validator(value);
         }
+        // Todo@robin: ...or true if no validator exists for given type?
         return false;
     }
 }

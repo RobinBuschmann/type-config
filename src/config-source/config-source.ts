@@ -45,6 +45,7 @@ export abstract class ConfigSource {
         if (this.typeDeserializerMap.has(type)) {
             return this.typeDeserializerMap.get(type) as DeserializeFunction;
         }
+        // Todo@robin: Consider deserializer for objects especially types
         return this.defaultDeserializer;
     }
 

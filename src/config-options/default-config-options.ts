@@ -5,8 +5,8 @@ export const defaultConfigOptions = {
     validate: true,
     required: true,
     lazyLoad: true,
+    warnOnly: false,
     existsWhen: ConfigExists.HasValue,
-    toBooleanWhenExists: false,
     logger: console,
     decoratorMeta: defaultDecoratorMeta,
 };

@@ -4,7 +4,7 @@ import {TypeValidator} from '../type-validator';
 import {ConfigValueOptions} from './config-calue-options';
 
 const defaultPropertyDescriptorOptions = {
-    enumerable: true
+    enumerable: true,
 };
 
 export class ConfigValue {
@@ -59,10 +59,16 @@ export class ConfigValue {
         if (rawValue !== undefined) {
             this.value = this.configSource.deserialize(this.type, rawValue, this.additionalType);
         }
-        // Todo
-        if (!this.typeValidator.validate(this.type, this.value)) {
-            this.configOptions.logger.warn(`Deserialized value "${JSON.stringify(this.value)}" of config key ` +
-                `"${this.configKey}" is not a valid ${this.type.name.toLowerCase()}`);
+        // Todo@robin: Improve validation
+        if (this.configOptions.validate) {
+            if (!this.typeValidator.validate(this.type, this.value)) {
+                if (this.configOptions.warnOnly) {
+                    this.configOptions.logger.warn(`Deserialized value "${JSON.stringify(this.value)}" of config key ` +
+                        `"${this.configKey}" is not a valid ${this.type.name.toLowerCase()}`);
+                } else {
+                    // Todo@robin: Throw validation error
+                }
+            }
         }
         this.isLoaded = true;
     }

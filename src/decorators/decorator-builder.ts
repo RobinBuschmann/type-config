@@ -10,6 +10,7 @@ type ValueDecorators<T> = {
 }
 
 export const buildDecorators = <T extends DecoratorMeta>(options: ConfigOptions<T>): ValueDecorators<T> => {
+    // Todo@robin: Provide validator by options instead of instantiating it here
     const typeValidator = new TypeValidator();
     return Object
         .keys(options.decoratorMeta)

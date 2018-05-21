@@ -2,15 +2,13 @@ import {ConfigExists} from './config-exists';
 import {DecoratorMeta} from '../decorators/decorator-meta';
 
 export interface ConfigOptions<T extends DecoratorMeta> {
-    // TODO
     validate: boolean;
+    warnOnly: boolean;
     lazyLoad: boolean;
     // TODO
     required: boolean;
     // TODO
     existsWhen: ConfigExists;
-    // TODO
-    toBooleanWhenExists: boolean;
     decoratorMeta: T;
     logger: {
         log(message: string, ...args: any[]): void;
