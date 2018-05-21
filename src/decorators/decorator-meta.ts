@@ -1,6 +1,6 @@
-import {NodeEnvConfigSource} from '../config-source/node-env-config-source.model';
-import {ConfigSource} from '../config-source/config-source.model';
-import {NodeArgsConfigSource} from '../config-source/node-args-config-source.model';
+import {NodeEnvConfigSource} from '../config-source/node-env-config-source';
+import {ConfigSource} from '../config-source/config-source';
+import {NodeArgsConfigSource} from '../config-source/node-args-config-source';
 
 export type DecoratorMeta = {
     [decoratorKey: string]: new () => ConfigSource

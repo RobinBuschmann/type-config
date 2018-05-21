@@ -1,4 +1,4 @@
-import {ArgsValue, createTypeConfig, EnvValue, Value} from '../src/type-config';
+import {buildDecorators, ArgsValue, EnvValue, Value} from '../src/type-config';
 
 console.log(process.argv);
 
@@ -18,8 +18,7 @@ const DB_USER_IDS_KEY = 'DB_USER_IDS';
 const DB_USER_IDS_VALUE = [1, 2];
 process.env[DB_USER_IDS_KEY] = DB_USER_IDS_VALUE.join(',');
 
-const tc = createTypeConfig({lazyLoad: false});
-
+const {ArgsValue: InstantArgsValue} = buildDecorators({lazyLoad: false});
 
 class DBConfig {
 
@@ -38,7 +37,7 @@ class DBConfig {
     @ArgsValue('test')
     test: string[];
 
-    @tc.ArgsValue('test')
+    @InstantArgsValue('test')
     instantTest: string[];
 
     @ArgsValue('test2')

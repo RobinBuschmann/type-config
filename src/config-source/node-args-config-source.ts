@@ -1,4 +1,4 @@
-import {ConfigSource} from './config-source.model';
+import {ConfigSource} from './config-source';
 
 export class NodeArgsConfigSource extends ConfigSource {
 

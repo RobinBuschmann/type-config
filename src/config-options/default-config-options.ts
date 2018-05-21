@@ -1,4 +1,4 @@
-import {ConfigExists} from './config-exists.enum';
+import {ConfigExists} from './config-exists';
 import {defaultDecoratorMeta} from '../decorators/decorator-meta';
 
 export const defaultConfigOptions = {

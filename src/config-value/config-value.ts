@@ -1,7 +1,7 @@
-import {ConfigOptions} from '../config-options/config-options.interface';
-import {ConfigSource} from '../config-source/config-source.model';
+import {ConfigOptions} from '../config-options/config-options';
+import {ConfigSource} from '../config-source/config-source';
 import {TypeValidator} from '../type-validator';
-import {ConfigValueOptions} from './config-calue-options.instance';
+import {ConfigValueOptions} from './config-calue-options';
 
 const defaultPropertyDescriptorOptions = {
     enumerable: true
@@ -59,6 +59,7 @@ export class ConfigValue {
         if (rawValue !== undefined) {
             this.value = this.configSource.deserialize(this.type, rawValue, this.additionalType);
         }
+        // Todo
         if (!this.typeValidator.validate(this.type, this.value)) {
             this.configOptions.logger.warn(`Deserialized value "${JSON.stringify(this.value)}" of config key ` +
                 `"${this.configKey}" is not a valid ${this.type.name.toLowerCase()}`);

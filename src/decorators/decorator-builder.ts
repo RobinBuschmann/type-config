@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import {ConfigOptions} from '../config-options/config-options.interface';
+import {ConfigOptions} from '../config-options/config-options';
 import {TypeValidator} from '../type-validator';
-import {ConfigValue} from '../config-value/config.value.model';
+import {ConfigValue} from '../config-value/config-value';
 import {DecoratorMeta} from './decorator-meta';
 
 export type ValueDecorator = (envKey: string, additionalType?: any) => PropertyDecorator;

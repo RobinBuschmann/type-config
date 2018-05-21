@@ -1,4 +1,4 @@
-import {ConfigExists} from './config-exists.enum';
+import {ConfigExists} from './config-exists';
 import {DecoratorMeta} from '../decorators/decorator-meta';
 
 export interface ConfigOptions<T extends DecoratorMeta> {
