@@ -1,5 +1,6 @@
-import {buildDecorators, ArgsValue, EnvValue, Value} from '../src/type-config';
+import {buildDecorators, ArgsValue, EnvValue, Value, JsonValue} from '../src/type-config';
 import {ConfigSource} from '../src/config-source/config-source';
+import {JsonConfiguration} from '../src/config-source/json-config-source';
 
 console.log(process.argv);
 
@@ -44,10 +45,14 @@ const {ArgsValue: InstantArgsValue, FromCustom} = buildDecorators({
     }
 });
 
+@JsonConfiguration(__dirname + '/config.json')
 class DBConfig {
 
     @Value(DB_NAME_KEY)
     name: string;
+
+    @JsonValue('database.host')
+    host: string;
 
     @Value(DB_TIMEOUT_KEY)
     timeout: number;
@@ -85,6 +90,7 @@ const config = new DBConfig();
 console.log('SPREADING BEFORE', {...config});
 
 console.log('name           ', config.name, typeof config.name, eqls(config.name, DB_NAME_VALUE));
+console.log('host           ', config.host, typeof config.host);
 console.log('timeout        ', config.timeout, typeof config.timeout, eqls(config.timeout, DB_TIMEOUT_VALUE));
 console.log('users          ', config.users, typeof config.users, eqls(config.users, DB_USERS_VALUE));
 console.log('userIds        ', config.userIds, typeof config.userIds, eqls(config.userIds, DB_USER_IDS_VALUE));

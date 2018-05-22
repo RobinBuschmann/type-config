@@ -7,7 +7,7 @@ export class NodeEnvConfigSource extends ConfigSource {
     }
 
     hasValue(key: string): boolean {
-        return !!process.env[key];
+        return process.env[key] !== undefined;
     }
 
     hasKey(key: string): boolean {

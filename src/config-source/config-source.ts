@@ -6,7 +6,8 @@ export abstract class ConfigSource {
     protected typeDeserializerMap: Map<any, DeserializeFunction>;
     protected defaultDeserializer = value => value;
 
-    constructor(protected typeDeserializer: TypeDeserializer[] = []) {
+    constructor(protected target: any,
+                protected typeDeserializer: TypeDeserializer[] = []) {
 
         this.typeDeserializerMap = new Map<any, DeserializeFunction>(
             [

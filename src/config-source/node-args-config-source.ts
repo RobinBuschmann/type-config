@@ -4,11 +4,13 @@ export class NodeArgsConfigSource extends ConfigSource {
 
     private preparedArgs: any;
 
-    constructor() {
-        super([
-            [Array, (value, {deserializer}) => (Array.isArray(value) ? value : [value]).map(deserializer)],
-            [String, value => Array.isArray(value) ? value.join(',') : value],
-        ]);
+    constructor(protected target: any) {
+        super(
+            target,
+            [
+                [Array, (value, {deserializer}) => (Array.isArray(value) ? value : [value]).map(deserializer)],
+                [String, value => Array.isArray(value) ? value.join(',') : value],
+            ]);
         this.prepareArgs();
     }
 
@@ -17,7 +19,7 @@ export class NodeArgsConfigSource extends ConfigSource {
     }
 
     hasValue(key: string): boolean {
-        return !!this.preparedArgs[key];
+        return this.preparedArgs[key] !== undefined;
     }
 
     hasKey(key: string): boolean {
@@ -30,8 +32,8 @@ export class NodeArgsConfigSource extends ConfigSource {
         const convertOptionToKey = value => value.replace(getIsOptionRegex(), '');
         const getValues = args => {
             let values: any[] = [];
-            for(const arg of args) {
-                if(isOption(arg)) {
+            for (const arg of args) {
+                if (isOption(arg)) {
                     break;
                 } else {
                     values = [...values, arg];

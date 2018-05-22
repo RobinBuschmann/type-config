@@ -13,4 +13,4 @@ export const buildDecorators = <T extends DecoratorMeta>(options: Partial<Config
     });
 };
 
-export const {EnvValue, ArgsValue, Value} = buildDecorators();
+export const {EnvValue, ArgsValue, Value, JsonValue} = buildDecorators();

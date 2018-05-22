@@ -23,7 +23,7 @@ export const buildDecorators = <T extends DecoratorMeta>(options: ConfigOptions<
                             target,
                             additionalType,
                             configKey,
-                            configSource: new options.decoratorMeta[decoratorKey](),
+                            configSource: new options.decoratorMeta[decoratorKey](target),
                             configOptions: options,
                         })
                     }
