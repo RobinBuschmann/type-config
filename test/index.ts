@@ -2,8 +2,6 @@ import {buildDecorators, ArgsValue, EnvValue, Value, JsonValue} from '../src/typ
 import {ConfigSource} from '../src/config-source/config-source';
 import {JsonConfiguration} from '../src/config-source/json-config-source';
 
-console.log(process.argv);
-
 const DB_NAME_KEY = 'DB_NAME';
 const DB_NAME_VALUE = 'test';
 process.env[DB_NAME_KEY] = DB_NAME_VALUE;
