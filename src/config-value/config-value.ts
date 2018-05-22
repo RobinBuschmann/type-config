@@ -1,7 +1,9 @@
 import {ConfigOptions} from '../config-options/config-options';
 import {ConfigSource} from '../config-source/config-source';
-import {TypeValidator} from '../type-validator';
+import {TypeValidator} from '../validation/type-validator';
 import {ConfigValueOptions} from './config-calue-options';
+import {ValidationError} from '../validation/validation-error';
+import {ValueMissingError} from './value-missing-error';
 
 const defaultPropertyDescriptorOptions = {
     enumerable: true,
@@ -15,14 +17,14 @@ export class ConfigValue {
     private isLoaded: boolean = false;
     private target: any;
     private propertyKey: string | symbol;
+    private typeValidator: TypeValidator;
 
-    private configKey: string;
+    private configIdentifier: string;
     private additionalType: any;
     private configSource: ConfigSource;
     private configOptions: ConfigOptions<any>;
 
-    constructor(private typeValidator: TypeValidator,
-                options: ConfigValueOptions) {
+    constructor(options: ConfigValueOptions) {
 
         Object.keys(options).forEach(key => this[key] = options[key]);
 
@@ -55,22 +57,40 @@ export class ConfigValue {
     }
 
     private loadAndValidateValue() {
-        const rawValue = this.configSource.getValue(this.configKey);
+        this.loadValue();
+        if (this.configOptions.required && this.value === undefined) {
+            const message = `Value of config key "${this.configIdentifier}" is missing on ` +
+                `${this.target.constructor.name}.${this.propertyKey}`;
+            if (this.configOptions.warnOnly) {
+                this.configOptions.logger.warn(message);
+            } else {
+                throw new ValueMissingError(message);
+            }
+        }
+        if (this.configOptions.validate) {
+            this.validateValue();
+        }
+        this.isLoaded = true;
+    }
+
+    private loadValue() {
+        const rawValue = this.configSource.getValue(this.configIdentifier);
         if (rawValue !== undefined) {
             this.value = this.configSource.deserialize(this.type, rawValue, this.additionalType);
         }
-        // Todo@robin: Improve validation
-        if (this.configOptions.validate) {
-            if (!this.typeValidator.validate(this.type, this.value)) {
-                if (this.configOptions.warnOnly) {
-                    this.configOptions.logger.warn(`Deserialized value "${JSON.stringify(this.value)}" of config key ` +
-                        `"${this.configKey}" is not a valid ${this.type.name.toLowerCase()}`);
-                } else {
-                    // Todo@robin: Throw validation error
-                }
+    }
+
+    private validateValue() {
+        // Todo@robin: How and where to check additional type of value?
+        if (!this.typeValidator.validate(this.type, this.value)) {
+            const message = `Deserialized value ${JSON.stringify(this.value)} of config key ` +
+                `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}`;
+            if (this.configOptions.warnOnly) {
+                this.configOptions.logger.warn(message);
+            } else {
+                throw new ValidationError(message);
             }
         }
-        this.isLoaded = true;
     }
 
     private setDefaultWhenValueIsUndefined() {

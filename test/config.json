@@ -1,5 +1,8 @@
 {
   "database": {
     "host": "localhost"
+  },
+  "users": {
+    "ids": ["1", "2"]
   }
 }

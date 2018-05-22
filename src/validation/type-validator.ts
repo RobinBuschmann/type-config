@@ -3,23 +3,27 @@ type ValidatorFunction = (value) => boolean;
 export class TypeValidator {
 
     private validatorMap: Map<any, ValidatorFunction>;
+    private defaultValidator = () => true;
 
     constructor() {
         this.validatorMap = new Map<any, ValidatorFunction>([
-            [Number, value => !isNaN(value) && typeof value === 'number'],
+            [Number, value => !isNaN(value) && isFinite(value) && typeof value === 'number'],
             [Boolean, value => typeof value === 'boolean'],
             [String, value => typeof value === 'string'],
             [Array, value => Array.isArray(value)],
-            // Todo@robin: Add validators
         ]);
     }
 
     validate(type, value) {
+        const validator = this.getValidator(type);
+        return validator(value);
+    }
+
+    private getValidator(type) {
         const validator = this.validatorMap.get(type);
         if (validator) {
-            return validator(value);
+            return validator;
         }
-        // Todo@robin: ...or true if no validator exists for given type?
-        return false;
+        return this.defaultValidator;
     }
 }

@@ -9,9 +9,4 @@ export class NodeEnvConfigSource extends ConfigSource {
     hasValue(key: string): boolean {
         return process.env[key] !== undefined;
     }
-
-    hasKey(key: string): boolean {
-        return key in process.env;
-    }
-
 }

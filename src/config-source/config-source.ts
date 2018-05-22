@@ -28,11 +28,9 @@ export abstract class ConfigSource {
         );
     }
 
-    abstract getValue(key: string): string | undefined;
+    abstract getValue(identifier: string): string | undefined;
 
-    abstract hasValue(key: string): boolean;
-
-    abstract hasKey(key: string): boolean;
+    abstract hasValue(identifier: string): boolean;
 
     deserialize(type: any,
                 value: string,

@@ -3,7 +3,7 @@ import {ConfigSource} from './config-source';
 const JSON_SOURCE_FILEPATH_META_KEY = 'type-config:json-filepath';
 const JSON_SOURCE_PATH_SEPARATOR = '.';
 
-export const JsonConfiguration = (filePath: string): ClassDecorator => (target) => {
+export const JsonConfiguration = (filePath: string): ClassDecorator => target => {
     Reflect.defineMetadata(JSON_SOURCE_FILEPATH_META_KEY, filePath, target.prototype);
 };
 
@@ -13,7 +13,12 @@ export class JsonConfigSource extends ConfigSource {
     private jsonConfig: any;
 
     constructor(protected target: any) {
-        super(target);
+        super(target, [
+            [Number, value => value],
+            [Boolean, value => value],
+            [String, value => value],
+            [Array, value => value],
+        ]);
     }
 
     getValue(path: string): string | undefined {
@@ -24,11 +29,6 @@ export class JsonConfigSource extends ConfigSource {
     hasValue(path: string): boolean {
         this.prepareJsonIfNotAlreadyPrepared();
         return this.resolveValue(path) !== undefined;
-    }
-
-    hasKey(path: string): boolean {
-        this.prepareJsonIfNotAlreadyPrepared();
-        return this.hasValue(path);
     }
 
     private resolveValue(path: string) {

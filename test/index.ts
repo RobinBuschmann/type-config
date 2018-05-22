@@ -34,7 +34,7 @@ const {ArgsValue: InstantArgsValue, FromCustom} = buildDecorators({
             hasValue(key) {
                 return !!this.config[key];
             }
-            hasKey(key) {
+            hasIdentifier(key) {
                 return key in this.config;
             }
 
@@ -62,6 +62,9 @@ class DBConfig {
 
     @Value(DB_USER_IDS_KEY, Number)
     userIds: number[] = [4,5];
+
+    @JsonValue('users.ids', Number)
+    userIds2: number[];
 
     @ArgsValue('test')
     test: string[];
@@ -94,6 +97,7 @@ console.log('host           ', config.host, typeof config.host);
 console.log('timeout        ', config.timeout, typeof config.timeout, eqls(config.timeout, DB_TIMEOUT_VALUE));
 console.log('users          ', config.users, typeof config.users, eqls(config.users, DB_USERS_VALUE));
 console.log('userIds        ', config.userIds, typeof config.userIds, eqls(config.userIds, DB_USER_IDS_VALUE));
+console.log('userIds2       ', config.userIds2, typeof config.userIds2);
 
 console.log('static test    ', DBConfig.test, typeof DBConfig.test);
 // console.log('instance test  ', config.instantTest, typeof config.instantTest);
