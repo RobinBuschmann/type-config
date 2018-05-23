@@ -10,6 +10,7 @@ export class TypeValidator {
             [Number, value => !isNaN(value) && isFinite(value) && typeof value === 'number'],
             [Boolean, value => typeof value === 'boolean'],
             [String, value => typeof value === 'string'],
+            [Date, value => value instanceof Date],
             [Array, value => Array.isArray(value)],
         ]);
     }
