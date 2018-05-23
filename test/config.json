@@ -3,6 +3,7 @@
     "host": "localhost"
   },
   "users": {
+    "defaultExpirationDate": "2018-05-22T19:45:02.445Z",
     "ids": ["1", "2"]
   }
 }
