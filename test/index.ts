@@ -52,6 +52,7 @@ const {ArgsValue: InstantArgsValue, FromCustom} = buildDecorators({
 });
 
 const validUsersDeserializer = value => value.split(',').map(u => u.split(':')).map(([username, pwd]) => ({username, pwd}));
+const FileValue = configIdentifier => Value(configIdentifier, readFileSync);
 
 @JsonConfiguration(__dirname + '/config.json')
 class DBConfig {
@@ -61,6 +62,9 @@ class DBConfig {
 
     @Value(CERT_KEY, readFileSync)
     file: Buffer;
+
+    @FileValue(CERT_KEY)
+    file2: Buffer;
 
     @Value(VALID_USERS_KEY, validUsersDeserializer)
     validUsers: Array<{username: string, pwd: string}>;
@@ -112,6 +116,7 @@ console.log('SPREADING BEFORE', {...config});
 console.log('name           ', config.name, typeof config.name, eqls(config.name, DB_NAME_VALUE));
 console.log('host           ', config.host, typeof config.host);
 console.log('file           ', config.file, typeof config.file, config.file.toString('utf8'));
+console.log('file2          ', config.file2, typeof config.file2, config.file2.toString('utf8'));
 console.log('validUsers     ', config.validUsers, typeof config.validUsers);
 console.log('expirationDate ', config.expirationDate, config.expirationDate instanceof Date);
 console.log('timeout        ', config.timeout, typeof config.timeout, eqls(config.timeout, DB_TIMEOUT_VALUE));
