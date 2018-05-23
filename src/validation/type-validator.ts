@@ -19,6 +19,10 @@ export class TypeValidator {
         return validator(value);
     }
 
+    hasValidator(type) {
+        return this.validatorMap.has(type);
+    }
+
     private getValidator(type) {
         const validator = this.validatorMap.get(type);
         if (validator) {

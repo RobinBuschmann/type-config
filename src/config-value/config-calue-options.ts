@@ -5,7 +5,7 @@ import {TypeValidator} from '../validation/type-validator';
 export interface ConfigValueOptions {
     target: any;
     propertyKey: string | symbol;
-    additionalType: any;
+    additionalTypeOrDeserializer: any;
     typeValidator: TypeValidator;
     configIdentifier: string;
     configSource: ConfigSource;

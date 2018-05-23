@@ -14,6 +14,7 @@ export abstract class ConfigSource {
                 [Array, (value, {deserializer}) => value.split(',').map(deserializer)],
                 [Boolean, value => value === true || value === '1' || value === 'true'],
                 [Number, value => parseFloat(value)],
+                [Date, value => new Date(value)],
                 [Object, (value) => {
                     try {
                         return JSON.parse(value);

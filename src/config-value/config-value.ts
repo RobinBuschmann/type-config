@@ -20,7 +20,7 @@ export class ConfigValue {
     private typeValidator: TypeValidator;
 
     private configIdentifier: string;
-    private additionalType: any;
+    private additionalTypeOrDeserializer: any;
     private configSource: ConfigSource;
     private configOptions: ConfigOptions<any>;
 
@@ -76,7 +76,11 @@ export class ConfigValue {
     private loadValue() {
         const rawValue = this.configSource.getValue(this.configIdentifier);
         if (rawValue !== undefined) {
-            this.value = this.configSource.deserialize(this.type, rawValue, this.additionalType);
+            if (this.additionalTypeOrDeserializer && !this.typeValidator.hasValidator(this.additionalTypeOrDeserializer)) {
+                this.value = this.additionalTypeOrDeserializer(rawValue);
+            } else {
+                this.value = this.configSource.deserialize(this.type, rawValue, this.additionalTypeOrDeserializer);
+            }
         }
     }
 
