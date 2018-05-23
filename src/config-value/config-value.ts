@@ -85,10 +85,13 @@ export class ConfigValue {
     }
 
     private validateValue() {
-        // Todo@robin: How and where to check additional type of value?
-        if (!this.typeValidator.validate(this.type, this.value)) {
+        const additionalType = this.typeValidator.hasValidator(this.additionalTypeOrDeserializer)
+            ? this.additionalTypeOrDeserializer
+            : undefined;
+        if (!this.typeValidator.validate(this.type, this.value, this.additionalTypeOrDeserializer)) {
             const message = `Deserialized value ${JSON.stringify(this.value)} of config key ` +
-                `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}`;
+                `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}` +
+                (additionalType ? ` or inner value is not a valid ${additionalType.name}` : '');
             if (this.configOptions.warnOnly) {
                 this.configOptions.logger.warn(message);
             } else {

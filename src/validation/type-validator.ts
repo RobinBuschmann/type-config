@@ -1,4 +1,4 @@
-type ValidatorFunction = (value) => boolean;
+type ValidatorFunction = (value, validator) => boolean;
 
 export class TypeValidator {
 
@@ -11,13 +11,14 @@ export class TypeValidator {
             [Boolean, value => typeof value === 'boolean'],
             [String, value => typeof value === 'string'],
             [Date, value => value instanceof Date],
-            [Array, value => Array.isArray(value)],
+            [Array, (value, validator) => Array.isArray(value) && value.reduce((valid, v) => valid && validator(v), true)],
         ]);
     }
 
-    validate(type, value) {
+    validate(type, value, additionalType) {
         const validator = this.getValidator(type);
-        return validator(value);
+        const additionalTypeValidator = this.getValidator(additionalType);
+        return validator(value, additionalTypeValidator);
     }
 
     hasValidator(type) {
