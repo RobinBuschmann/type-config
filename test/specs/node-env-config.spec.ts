@@ -24,7 +24,7 @@ describe('node-env-config', () => {
 
             // invalid
             @Value(db.host.key) hostNumber: number;
-            @Value(db.poolIds.key) poolIdStrings: string;
+            @Value(db.poolIds.key) poolIdStrings: number;
         }
 
         const databaseConfig = new DatabaseConfig();
@@ -55,11 +55,7 @@ describe('node-env-config', () => {
         });
 
         it('should throw validation errors', () => {
-
-            expect(() => databaseConfig.hostNumber).to
-                .throw(ValidationError);
-            expect(() => databaseConfig.poolIdStrings).to
-                .throw(ValidationError);
+            expect(() => databaseConfig.hostNumber).to.throw(ValidationError);
         });
 
     });
