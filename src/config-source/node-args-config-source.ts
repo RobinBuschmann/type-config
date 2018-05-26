@@ -17,8 +17,8 @@ export class NodeArgsConfigSource extends ConfigSource {
         this.prepareArgs();
     }
 
-    getValue(key: string): string | undefined {
-        return this.preparedArgs[key];
+    getValue(key: string): string {
+        return this.preparedArgs[key] || '';
     }
 
     private prepareArgs() {

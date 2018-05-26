@@ -4,16 +4,46 @@ import {ValidationError} from '../../src/validation/validation-error';
 
 describe('node-env-config', () => {
 
+    const loadProcessEnvs = (config) => Object
+        .keys(config)
+        .forEach((key, i, a, variable = config[key]) => process.env[variable.key] = variable.toString());
+
     describe('proper configuration', () => {
 
         const db = {
-            host: {key: 'DB_HOST', value: 'localhost', toString() {return this.value}},
-            name: {key: 'DB_NAME', value: 'type-config', toString() {return this.value}},
-            port: {key: 'DB_PORT', value: 1234, toString() {return String(this.value)}},
-            username: {key: 'DB_USERNAME', value: 'bear', toString() {return this.value}},
-            password: {key: 'DB_PASSWORD', value: 'honey', toString() {return this.value}},
-            poolIds: {key: 'DB_POOLIDS', value: [13, 32, 46], toString() {return this.value.join(',')}},
+            host: {
+                key: 'DB_HOST', value: 'localhost', toString() {
+                    return this.value
+                },
+            },
+            name: {
+                key: 'DB_NAME', value: 'type-config', toString() {
+                    return this.value
+                },
+            },
+            port: {
+                key: 'DB_PORT', value: 1234, toString() {
+                    return String(this.value)
+                },
+            },
+            username: {
+                key: 'DB_USERNAME', value: 'bear', toString() {
+                    return this.value
+                },
+            },
+            password: {
+                key: 'DB_PASSWORD', value: 'honey', toString() {
+                    return this.value
+                },
+            },
+            poolIds: {
+                key: 'DB_POOLIDS', value: [13, 32, 46], toString() {
+                    return this.value.join(',')
+                },
+            },
         };
+        loadProcessEnvs(db);
+
         class DatabaseConfig {
             @Value(db.host.key) host: string;
             @Value(db.name.key) name: string;
@@ -30,9 +60,6 @@ describe('node-env-config', () => {
         const databaseConfig = new DatabaseConfig();
 
         it('should be able to load all values with correct type', () => {
-
-            Object.keys(db)
-                .forEach((key, i, a, variable = db[key]) => process.env[variable.key] = variable.toString());
 
             expect(databaseConfig.host).to.eql(db.host.value);
             expect(databaseConfig.host).to.be.a('string');
