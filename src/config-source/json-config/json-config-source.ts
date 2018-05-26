@@ -24,11 +24,6 @@ export class JsonConfigSource extends ConfigSource {
         return this.resolveValue(path);
     }
 
-    hasValue(path: string): boolean {
-        this.prepareJsonIfNotAlreadyPrepared();
-        return this.resolveValue(path) !== undefined;
-    }
-
     private resolveValue(path: string) {
         return path.split(JSON_SOURCE_PATH_SEPARATOR)
             .reduce((acc, key) => (acc !== undefined && acc[key] !== undefined)

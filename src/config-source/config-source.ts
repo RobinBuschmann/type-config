@@ -31,8 +31,6 @@ export abstract class ConfigSource {
 
     abstract getValue(identifier: string): string | undefined;
 
-    abstract hasValue(identifier: string): boolean;
-
     deserialize(type: any,
                 value: string,
                 additionalType?: any) {

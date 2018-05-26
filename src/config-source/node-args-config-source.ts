@@ -18,10 +18,6 @@ export class NodeArgsConfigSource extends ConfigSource {
         return this.preparedArgs[key];
     }
 
-    hasValue(key: string): boolean {
-        return this.preparedArgs[key] !== undefined;
-    }
-
     private prepareArgs() {
         const getIsOptionRegex = () => /^(--)|^(-)/;
         const isOption = value => getIsOptionRegex().test(value);
