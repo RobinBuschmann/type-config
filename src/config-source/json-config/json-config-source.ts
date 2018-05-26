@@ -1,11 +1,9 @@
-import {ConfigSource} from './config-source';
+import {ConfigSource} from '../config-source';
+import {JSON_SOURCE_FILEPATH_META_KEY} from './json-configuration';
+import {JsonConfigDecoratorMissingError} from './json-config-decorator-missing-error';
+import {JsonConfigDecoratorFilepathError} from './json-config-decorator-filepath-error';
 
-const JSON_SOURCE_FILEPATH_META_KEY = 'type-config:json-filepath';
 const JSON_SOURCE_PATH_SEPARATOR = '.';
-
-export const JsonConfiguration = (filePath: string): ClassDecorator => target => {
-    Reflect.defineMetadata(JSON_SOURCE_FILEPATH_META_KEY, filePath, target.prototype);
-};
 
 export class JsonConfigSource extends ConfigSource {
 
@@ -48,10 +46,19 @@ export class JsonConfigSource extends ConfigSource {
         if (!this.isJsonConfigPrepared) {
             const jsonFilePath = this.getJsonFilepath();
             if (!jsonFilePath) {
-                throw new Error(`"JsonConfiguration" decorator is missing on class "${this.target.name}"`);
+                throw new JsonConfigDecoratorMissingError(`"JsonConfiguration" decorator is missing on class` +
+                    ` "${this.target.constructor.name}"`);
             }
-            this.jsonConfig = require(jsonFilePath);
-            this.isJsonConfigPrepared = true;
+            try {
+                this.jsonConfig = require(jsonFilePath);
+                this.isJsonConfigPrepared = true;
+            } catch (e) {
+                if (/Cannot find module/.test(e.toString())) {
+                    throw new JsonConfigDecoratorFilepathError(`File path "./wrong-path" is wrong in` +
+                    ` "JsonConfiguration" decorator of class "${this.target.constructor.name}"`);
+                }
+                throw e;
+            }
         }
     }
 

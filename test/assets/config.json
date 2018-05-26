@@ -1,0 +1,16 @@
+{
+  "database": {
+    "host": "localhost",
+    "name": "type-config",
+    "port": 12345,
+    "username": "root",
+    "password": "12345",
+    "poolIds": [34, 22, 1]
+  },
+  "auth": {
+    "jwt": {
+      "expiryInMs": 900000,
+      "issuer": "type-config"
+    }
+  }
+}

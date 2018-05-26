@@ -1,6 +1,6 @@
 import {buildDecorators, ArgsValue, EnvValue, Value, JsonValue} from '../src/type-config';
 import {ConfigSource} from '../src/config-source/config-source';
-import {JsonConfiguration} from '../src/config-source/json-config-source';
+import {JsonConfiguration} from '../src/config-source/json-config/json-config-source';
 import {readFileSync} from 'fs';
 
 const DB_NAME_KEY = 'DB_NAME';

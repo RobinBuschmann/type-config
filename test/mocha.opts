@@ -1,0 +1,7 @@
+--require reflect-metadata
+--require test/mocha.tsnode.js
+--require source-map-support/register
+--recursive
+--full-trace
+
+test/**/*.spec.ts
