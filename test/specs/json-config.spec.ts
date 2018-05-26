@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {JsonConfiguration, JsonValue} from '../../';
+import {buildDecorators, JsonConfiguration, JsonValue} from '../../';
 import config = require('../assets/config.json');
 import {JsonConfigDecoratorMissingError} from '../../src/config-source/json-config/json-config-decorator-missing-error';
 import {JsonConfigDecoratorFilepathError} from '../../src/config-source/json-config/json-config-decorator-filepath-error';
@@ -25,7 +25,6 @@ describe('json-config', () => {
             @JsonValue('database.host') hostNumber: number;
             @JsonValue('database.poolIds') poolIdStrings: string;
         }
-
         const databaseConfig = new DatabaseConfig();
 
         it('should be able to load all values with correct type', () => {
@@ -66,6 +65,7 @@ describe('json-config', () => {
             class DatabaseConfig {
                 @JsonValue('database.host') host: string;
             }
+
             const databaseConfig = new DatabaseConfig();
 
             expect(() => databaseConfig.host).to
@@ -77,11 +77,12 @@ describe('json-config', () => {
             class DatabaseConfig {
                 @JsonValue('database.host') host: string;
             }
+
             const databaseConfig = new DatabaseConfig();
 
             expect(() => databaseConfig.host).to
                 .throw(JsonConfigDecoratorFilepathError, `File path "./wrong-path" is wrong in "JsonConfiguration" decorator` +
-                ` of class "${DatabaseConfig.name}"`);
+                    ` of class "${DatabaseConfig.name}"`);
         });
 
     });
@@ -96,6 +97,7 @@ describe('json-config', () => {
             @JsonValue(TEST_BLA_PATH) bla: string;
             @JsonValue(DATABASE_PORT_TEST_PATH) test: string;
         }
+
         const testConfig = new TestConfig();
 
         it('should throw due to loading from non existing config properties', () => {
@@ -103,6 +105,26 @@ describe('json-config', () => {
                 .throw(ValueMissingError, `Value of config key "${TEST_BLA_PATH}" is missing on TestConfig.bla`);
             expect(() => testConfig.test).to
                 .throw(ValueMissingError, `Value of config key "${DATABASE_PORT_TEST_PATH}" is missing on TestConfig.test`);
+        });
+
+    });
+
+    describe('custom options', () => {
+
+        describe('lazyLoad: false', () => {
+
+            const {JsonValue} = buildDecorators({lazyLoad: false});
+
+            it('should throw due to lazyLoad is false', () => {
+                expect(() => {
+                    @JsonConfiguration(JSON_CONFIG_PATH)
+                    class DatabaseConfig {
+                        @JsonValue('database.host') host: string;
+                    }
+                    new DatabaseConfig();
+                }).to.throw('"lazyLoad" need to be true to work properly with JsonConfig');
+            })
+
         });
 
     });

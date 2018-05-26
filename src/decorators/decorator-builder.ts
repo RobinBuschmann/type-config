@@ -22,7 +22,7 @@ export const buildDecorators = <T extends DecoratorMeta>(configOptions: ConfigOp
                             configIdentifier,
                             configOptions,
                             typeValidator: new configOptions.typeValidator(),
-                            configSource: new configOptions.decoratorMeta[decoratorKey](target),
+                            configSource: new configOptions.decoratorMeta[decoratorKey](configOptions, target),
                         })
                     }
             );

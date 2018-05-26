@@ -1,3 +1,5 @@
+import {AnyConfigOptions} from '../config-options/config-options';
+
 type DeserializeFunction = (value, options) => any;
 export type TypeDeserializer = [any, DeserializeFunction];
 
@@ -6,7 +8,8 @@ export abstract class ConfigSource {
     protected typeDeserializerMap: Map<any, DeserializeFunction>;
     protected defaultDeserializer = value => value;
 
-    constructor(protected target: any,
+    constructor(protected options: AnyConfigOptions,
+                protected target: any,
                 protected typeDeserializer: TypeDeserializer[] = []) {
 
         this.typeDeserializerMap = new Map<any, DeserializeFunction>(

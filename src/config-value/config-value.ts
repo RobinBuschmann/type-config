@@ -12,6 +12,7 @@ const defaultPropertyDescriptorOptions = {
 export class ConfigValue {
 
     private value: any;
+    private rawValue: any;
     private type: any;
     private defaultValue: any;
     private isLoaded: boolean = false;
@@ -74,12 +75,12 @@ export class ConfigValue {
     }
 
     private loadValue() {
-        const rawValue = this.configSource.getValue(this.configIdentifier);
-        if (rawValue !== undefined) {
+        this.rawValue = this.configSource.getValue(this.configIdentifier);
+        if (this.rawValue !== undefined) {
             if (this.additionalTypeOrDeserializer && !this.typeValidator.hasValidator(this.additionalTypeOrDeserializer)) {
-                this.value = this.additionalTypeOrDeserializer(rawValue);
+                this.value = this.additionalTypeOrDeserializer(this.rawValue);
             } else {
-                this.value = this.configSource.deserialize(this.type, rawValue, this.additionalTypeOrDeserializer);
+                this.value = this.configSource.deserialize(this.type, this.rawValue, this.additionalTypeOrDeserializer);
             }
         }
     }
@@ -89,7 +90,7 @@ export class ConfigValue {
             ? this.additionalTypeOrDeserializer
             : undefined;
         if (!this.typeValidator.validate(this.type, this.value, this.additionalTypeOrDeserializer)) {
-            const message = `Deserialized value ${JSON.stringify(this.value)} of config key ` +
+            const message = `Value "${String(this.rawValue)}" of config key ` +
                 `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}` +
                 (additionalType ? ` or inner value is not a valid ${additionalType.name}` : '');
             if (this.configOptions.warnOnly) {

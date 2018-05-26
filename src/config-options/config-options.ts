@@ -17,3 +17,5 @@ export interface ConfigOptions<T extends DecoratorMeta> {
         timeStamp?(message: string, ...args: any[]): void;
     };
 }
+
+export type AnyConfigOptions = ConfigOptions<any>;

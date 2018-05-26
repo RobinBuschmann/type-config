@@ -1,11 +1,14 @@
 import {ConfigSource} from './config-source';
+import {AnyConfigOptions} from '../config-options/config-options';
 
 export class NodeArgsConfigSource extends ConfigSource {
 
     private preparedArgs: any;
 
-    constructor(protected target: any) {
+    constructor(protected options: AnyConfigOptions,
+                protected target: any) {
         super(
+            options,
             target,
             [
                 [Array, (value, {deserializer}) => (Array.isArray(value) ? value : [value]).map(deserializer)],
