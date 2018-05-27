@@ -71,7 +71,10 @@ export class ConfigValue implements ConfigValueOptions {
 
     private loadAndValidateValue() {
         this.loadValue();
-        if (this.required && this.value === undefined) {
+        const isValueUndefined = this.value === undefined;
+        const isValueDefined = !isValueUndefined;
+        const isValueOptional = !this.required;
+        if (this.required && isValueUndefined) {
             const message = `Value of config key "${this.configIdentifier}" is missing on ` +
                 `${this.target.constructor.name}.${this.propertyKey}`;
             if (this.warnOnly) {
@@ -80,7 +83,8 @@ export class ConfigValue implements ConfigValueOptions {
                 throw new ValueMissingError(message);
             }
         }
-        if (this.validate) {
+        if (this.validate &&
+            ((isValueOptional && isValueDefined) || this.required)) {
             this.validateValue();
         }
         this.isLoaded = true;
