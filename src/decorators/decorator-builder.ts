@@ -2,30 +2,52 @@ import 'reflect-metadata';
 import {ConfigOptions} from '../config-options/config-options';
 import {ConfigValue} from '../config-value/config-value';
 import {DecoratorMeta} from './decorator-meta';
+import {ValueDecorator, ValueDecoratorOptions} from './value-decorator';
 
-export type ValueDecorator = (identifier: string, additionalTypeOrDeserializer?: any) => PropertyDecorator;
 type ValueDecorators<T> = {
     [K in keyof T]: ValueDecorator;
 }
 
-export const buildDecorators = <T extends DecoratorMeta>(configOptions: ConfigOptions<T>): ValueDecorators<T> => {
-    return Object
-        .keys(configOptions.decoratorMeta)
-        .reduce((acc, decoratorKey) => {
-            acc[decoratorKey] = (
-                (configIdentifier: string, additionalTypeOrDeserializer?: any): PropertyDecorator =>
-                    (target, propertyKey) => {
-                        new ConfigValue({
-                            propertyKey,
-                            target,
-                            additionalTypeOrDeserializer,
-                            configIdentifier,
-                            configOptions,
-                            typeValidator: new configOptions.typeValidator(),
-                            configSource: new configOptions.decoratorMeta[decoratorKey](configOptions, target),
-                        })
+export const buildDecorators =
+    <T extends DecoratorMeta>(configOptions: ConfigOptions<T>): ValueDecorators<T> => {
+        const {decoratorMeta, typeValidatorFactory, ...configValueOptions} = configOptions;
+        const typeValidator = typeValidatorFactory();
+        return Object
+            .keys(decoratorMeta)
+            .reduce((acc, decoratorKey) => {
+                acc[decoratorKey] = (
+                    (
+                        configIdentifierOrOptions: string | ValueDecoratorOptions,
+                        additionalTypeOrDeserializer?: any,
+                    ): PropertyDecorator => {
+                        const configIdentifier = typeof configIdentifierOrOptions === 'string'
+                            ? configIdentifierOrOptions
+                            : undefined;
+                        const additionalConfigValueOptions = (configIdentifier === undefined
+                            ? configIdentifierOrOptions
+                            : {}) as ValueDecoratorOptions;
+                        const additionalType = typeValidator.hasValidator(additionalTypeOrDeserializer)
+                            ? additionalTypeOrDeserializer
+                            : undefined;
+                        const deserializer = !additionalType && typeof additionalTypeOrDeserializer === 'function'
+                            ? additionalTypeOrDeserializer
+                            : undefined;
+
+                        return (target, propertyKey) => {
+                            new ConfigValue({
+                                ...configValueOptions,
+                                propertyKey,
+                                target,
+                                deserializer,
+                                additionalType,
+                                configIdentifier,
+                                typeValidator,
+                                configSource: new decoratorMeta[decoratorKey](configOptions, target),
+                                ...additionalConfigValueOptions,
+                            })
+                        }
                     }
-            );
-            return acc;
-        }, {} as ValueDecorators<T>);
-};
+                );
+                return acc;
+            }, {} as ValueDecorators<T>);
+    };

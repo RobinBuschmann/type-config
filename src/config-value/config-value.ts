@@ -1,7 +1,7 @@
-import {ConfigOptions} from '../config-options/config-options';
+import {Logger} from '../config-options/config-options';
 import {ConfigSource} from '../config-source/config-source';
 import {TypeValidator} from '../validation/type-validator';
-import {ConfigValueOptions} from './config-calue-options';
+import {ConfigValueOptions, Deserializer} from './config-value-options';
 import {ValidationError} from '../validation/validation-error';
 import {ValueMissingError} from './value-missing-error';
 
@@ -9,21 +9,25 @@ const defaultPropertyDescriptorOptions = {
     enumerable: true,
 };
 
-export class ConfigValue {
+export class ConfigValue implements ConfigValueOptions {
 
-    private value: any;
-    private rawValue: any;
-    private type: any;
-    private defaultValue: any;
-    private isLoaded: boolean = false;
-    private target: any;
-    private propertyKey: string | symbol;
-    private typeValidator: TypeValidator;
-
-    private configIdentifier: string;
-    private additionalTypeOrDeserializer: any;
-    private configSource: ConfigSource;
-    private configOptions: ConfigOptions<any>;
+    value: any;
+    rawValue: any;
+    type: any;
+    defaultValue: any;
+    validate: boolean;
+    lazyLoad: boolean;
+    required: boolean;
+    warnOnly: boolean;
+    logger: Logger;
+    isLoaded: boolean = false;
+    target: any;
+    additionalType: any | undefined;
+    deserializer: Deserializer | undefined;
+    propertyKey: string | symbol;
+    typeValidator: TypeValidator;
+    configIdentifier: string;
+    configSource: ConfigSource;
 
     constructor(options: ConfigValueOptions) {
 
@@ -31,7 +35,7 @@ export class ConfigValue {
 
         this.loadType();
 
-        if (!this.configOptions.lazyLoad) {
+        if (!this.lazyLoad) {
             this.loadAndValidateValue();
         }
         this.initTargetPropertyGettersAndSetters();
@@ -39,6 +43,7 @@ export class ConfigValue {
 
     private initTargetPropertyGettersAndSetters() {
         const configValue = this;
+        this.setDefaultAndValueForStaticMembers();
         Object.defineProperty(this.target, this.propertyKey, {
             ...defaultPropertyDescriptorOptions,
             get() {
@@ -57,18 +62,25 @@ export class ConfigValue {
         });
     }
 
+    private setDefaultAndValueForStaticMembers() {
+        if (this.propertyKey in this.target) {
+            this.defaultValue = this.target[this.propertyKey];
+            this.value = this.target[this.propertyKey];
+        }
+    }
+
     private loadAndValidateValue() {
         this.loadValue();
-        if (this.configOptions.required && this.value === undefined) {
+        if (this.required && this.value === undefined) {
             const message = `Value of config key "${this.configIdentifier}" is missing on ` +
                 `${this.target.constructor.name}.${this.propertyKey}`;
-            if (this.configOptions.warnOnly) {
-                this.configOptions.logger.warn(message);
+            if (this.warnOnly) {
+                this.logger.warn(message);
             } else {
                 throw new ValueMissingError(message);
             }
         }
-        if (this.configOptions.validate) {
+        if (this.validate) {
             this.validateValue();
         }
         this.isLoaded = true;
@@ -77,24 +89,21 @@ export class ConfigValue {
     private loadValue() {
         this.rawValue = this.configSource.getValue(this.configIdentifier);
         if (this.rawValue !== undefined) {
-            if (this.additionalTypeOrDeserializer && !this.typeValidator.hasValidator(this.additionalTypeOrDeserializer)) {
-                this.value = this.additionalTypeOrDeserializer(this.rawValue);
+            if (this.deserializer) {
+                this.value = this.deserializer(this.rawValue);
             } else {
-                this.value = this.configSource.deserialize(this.type, this.rawValue, this.additionalTypeOrDeserializer);
+                this.value = this.configSource.deserialize(this.type, this.rawValue, this.additionalType);
             }
         }
     }
 
     private validateValue() {
-        const additionalType = this.typeValidator.hasValidator(this.additionalTypeOrDeserializer)
-            ? this.additionalTypeOrDeserializer
-            : undefined;
-        if (!this.typeValidator.validate(this.type, this.value, this.additionalTypeOrDeserializer)) {
+        if (!this.typeValidator.validate(this.type, this.value, this.additionalType)) {
             const message = `Value "${String(this.rawValue)}" of config key ` +
                 `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}` +
-                (additionalType ? ` or inner value is not a valid ${additionalType.name}` : '');
-            if (this.configOptions.warnOnly) {
-                this.configOptions.logger.warn(message);
+                (this.additionalType ? ` or inner value is not a valid ${this.additionalType.name}` : '');
+            if (this.warnOnly) {
+                this.logger.warn(message);
             } else {
                 throw new ValidationError(message);
             }

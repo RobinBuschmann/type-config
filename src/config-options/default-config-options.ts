@@ -6,7 +6,7 @@ export const defaultConfigOptions = {
     required: true,
     lazyLoad: true,
     warnOnly: false,
-    typeValidator: TypeValidator,
+    typeValidatorFactory: () => new TypeValidator(),
     logger: console,
     decoratorMeta: defaultDecoratorMeta,
 };

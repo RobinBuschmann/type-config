@@ -1,18 +1,16 @@
 import {AnyConfigOptions} from '../config-options/config-options';
-
-type DeserializeFunction = (value, options) => any;
-export type TypeDeserializer = [any, DeserializeFunction];
+import {Deserializer, TypeDeserializer} from '../deserialization/type-deserializer';
 
 export abstract class ConfigSource {
 
-    protected typeDeserializerMap: Map<any, DeserializeFunction>;
+    protected typeDeserializerMap: Map<any, Deserializer>;
     protected defaultDeserializer = value => value;
 
     constructor(protected options: AnyConfigOptions,
                 protected target: any,
                 protected typeDeserializer: TypeDeserializer[] = []) {
 
-        this.typeDeserializerMap = new Map<any, DeserializeFunction>(
+        this.typeDeserializerMap = new Map<any, Deserializer>(
             [
                 [Array, (value, {deserializer}) => value.split(',').map(deserializer)],
                 [Boolean, value => value === true || value === '1' || value === 'true'],
@@ -44,7 +42,7 @@ export abstract class ConfigSource {
 
     private getDeserializer(type: any) {
         if (this.typeDeserializerMap.has(type)) {
-            return this.typeDeserializerMap.get(type) as DeserializeFunction;
+            return this.typeDeserializerMap.get(type) as Deserializer;
         }
         // Todo@robin: Consider deserializer for objects especially types
         return this.defaultDeserializer;

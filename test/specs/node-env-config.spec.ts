@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {Value} from '../../';
+import {EnvValue} from '../../';
 import {ValidationError} from '../../src/validation/validation-error';
 
 describe('node-env-config', () => {
@@ -45,22 +45,24 @@ describe('node-env-config', () => {
         loadProcessEnvs(db);
 
         class DatabaseConfig {
-            @Value(db.host.key) host: string;
-            @Value(db.name.key) name: string;
-            @Value(db.port.key) port: number;
-            @Value(db.username.key) username: string;
-            @Value(db.password.key) password: string;
-            @Value(db.poolIds.key, Number) poolIds: number[];
+            @EnvValue(db.host.key) host: string;
+            @EnvValue(db.name.key) name: string;
+            @EnvValue(db.port.key) port: number;
+            @EnvValue(db.username.key) username: string;
+            @EnvValue(db.password.key) password: string;
+            @EnvValue(db.poolIds.key, Number) poolIds: number[];
 
             // invalid
-            @Value(db.host.key) hostNumber: number;
-            @Value(db.poolIds.key) poolIdStrings: number;
+            @EnvValue(db.host.key) hostNumber: number;
+            @EnvValue(db.poolIds.key) poolIdStrings: number;
+
+            @EnvValue(db.host.key) static host: string;
+            @EnvValue(db.poolIds.key, Number) static poolIds: number[];
         }
 
         const databaseConfig = new DatabaseConfig();
 
         it('should be able to load all values with correct type', () => {
-
             expect(databaseConfig.host).to.eql(db.host.value);
             expect(databaseConfig.host).to.be.a('string');
 
@@ -83,6 +85,85 @@ describe('node-env-config', () => {
 
         it('should throw validation errors', () => {
             expect(() => databaseConfig.hostNumber).to.throw(ValidationError);
+        });
+
+        describe('static members', () => {
+
+            it('should be able to load all static values with correct type', () => {
+                expect(DatabaseConfig.host).to.eql(db.host.value);
+                expect(DatabaseConfig.host).to.be.a('string');
+
+                expect(DatabaseConfig.poolIds).to.eql(db.poolIds.value);
+                expect(DatabaseConfig.poolIds).to.be.an('array');
+                expect(DatabaseConfig.poolIds[0]).to.be.a('number');
+            });
+
+        });
+
+        describe('default values', () => {
+
+            const auth = {
+                jwtExpiry: {
+                    key: 'JWT_EXPIRY',
+                    value: new Date(),
+                    default: new Date(2000, 1, 1),
+                    toString() {
+                        return this.value.toJSON()
+                    },
+                },
+                jwtIssuer: {
+                    key: 'JWT_ISSUER',
+                    value: 'type-config',
+                    default: 'default-config',
+                    toString() {
+                        return this.value
+                    },
+                },
+            };
+            const nonSetEnvAuthVariables = {
+                authTokens: {
+                    key: 'AUTH_TOKENS',
+                    value: ['1234', '4321'],
+                    toString() {
+                        return this.value.join(',')
+                    },
+                },
+            };
+            loadProcessEnvs(auth);
+
+            class AuthConfig {
+                @EnvValue(auth.jwtExpiry.key) jwtExpiry: Date = auth.jwtExpiry.default;
+                @EnvValue(nonSetEnvAuthVariables.authTokens.key) authTokens: string[] =
+                    nonSetEnvAuthVariables.authTokens.value;
+
+                @EnvValue(auth.jwtIssuer.key) static jwtIssuer: string = auth.jwtIssuer.default;
+                @EnvValue(nonSetEnvAuthVariables.authTokens.key) static authTokens: string[] =
+                    nonSetEnvAuthVariables.authTokens.value;
+            }
+            const authConfig = new AuthConfig();
+
+            it('should overwrite default value', () => {
+                expect(authConfig.jwtExpiry).to.eql(auth.jwtExpiry.value);
+            });
+
+            it('should not throw despite of env var is missing due to default value is set', () => {
+                expect(() => authConfig.authTokens).to.not.throw();
+                expect(authConfig.authTokens).to.eql(nonSetEnvAuthVariables.authTokens.value);
+            });
+
+            describe('static members', () => {
+
+                it('should overwrite default value of static member', () => {
+                    expect(AuthConfig.jwtIssuer).to.eql(auth.jwtIssuer.value);
+                });
+
+                it('should not throw despite of env var is missing due to default value is set', () => {
+                    expect(() => AuthConfig.authTokens).to.not.throw();
+                    expect(AuthConfig.authTokens).to.eql(nonSetEnvAuthVariables.authTokens.value);
+                });
+
+            });
+
         });
 
     });
