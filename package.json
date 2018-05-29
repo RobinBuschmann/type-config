@@ -1,14 +1,21 @@
 {
   "name": "type-config",
   "version": "1.0.0",
-  "description": "",
+  "description": "Type safe way defining configurations fed by environment variables, process arguments or json config files (including deserialization and validation)",
   "main": "index.js",
-  "author": "",
-  "license": "ISC",
+  "types": "index.d.ts",
+  "author": "Robin Buschmann",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RobinBuschmann/type-config/issues"
+  },
+  "homepage": "https://github.com/RobinBuschmann/type-config#readme",
   "scripts": {
     "build": "tsc",
+    "build-publish": "tsc --p tsconfig.publish.json",
     "test": "mocha",
-    "cover": "nyc mocha"
+    "cover": "nyc mocha",
+    "prepublish": "npm run build-publish"
   },
   "nyc": {
     "lines": 70,

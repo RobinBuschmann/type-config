@@ -26,7 +26,7 @@ export class ConfigValue implements ConfigValueOptions {
     deserializer: Deserializer | undefined;
     propertyKey: string | symbol;
     typeValidator: TypeValidator;
-    configIdentifier: string;
+    id: string;
     configSource: ConfigSource;
 
     constructor(options: ConfigValueOptions) {
@@ -75,7 +75,7 @@ export class ConfigValue implements ConfigValueOptions {
         const isValueDefined = !isValueUndefined;
         const isValueOptional = !this.required;
         if (this.required && isValueUndefined) {
-            const message = `Value of config key "${this.configIdentifier}" is missing on ` +
+            const message = `Value of config key "${this.id}" is missing on ` +
                 `${this.target.constructor.name}.${this.propertyKey}`;
             if (this.warnOnly) {
                 this.logger.warn(message);
@@ -91,7 +91,7 @@ export class ConfigValue implements ConfigValueOptions {
     }
 
     private loadValue() {
-        this.rawValue = this.configSource.getValue(this.configIdentifier);
+        this.rawValue = this.configSource.getValue(this.id);
         if (this.rawValue !== undefined) {
             if (this.deserializer) {
                 this.value = this.deserializer(this.rawValue);
@@ -103,8 +103,8 @@ export class ConfigValue implements ConfigValueOptions {
 
     private validateValue() {
         if (!this.typeValidator.validate(this.type, this.value, this.additionalType)) {
-            const message = `Value "${String(this.rawValue)}" of config key ` +
-                `"${this.configIdentifier}" is not a valid ${this.type.name.toLowerCase()}` +
+            const message = `Value "${String(this.rawValue)}" of config identifier ` +
+                `"${this.id}" is not a valid ${this.type.name.toLowerCase()}` +
                 (this.additionalType ? ` or inner value is not a valid ${this.additionalType.name}` : '');
             if (this.warnOnly) {
                 this.logger.warn(message);

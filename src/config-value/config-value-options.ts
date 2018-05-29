@@ -13,6 +13,6 @@ export interface ConfigValueOptions extends BaseConfigOptions, AdditionalConfigV
     target: any;
     propertyKey: string | symbol;
     typeValidator: TypeValidator;
-    configIdentifier: string;
+    id: string;
     configSource: ConfigSource;
 }

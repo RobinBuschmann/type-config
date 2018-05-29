@@ -1,5 +1,6 @@
 # type-config
-Type safe way of loading environment variables and arguments in node.
+Type safe way defining configurations fed by environment variables, process arguments or json config files 
+(including deserialization and validation).
 
 ## Installation
 ```bash
@@ -18,8 +19,9 @@ Your `tsconfig.json` needs the following flags:
 ```
 
 ## Getting started
-##### Setup configuration class
+#### Setup configuration class
 ```typescript
+import {EnvValue} from 'type-config';
 class DataBaseConfiguration {
     @EnvValue('DB_HOST') host: string = 'localhost';
     @EnvValue('DB_NAME') name: string;
@@ -27,6 +29,7 @@ class DataBaseConfiguration {
 }
 ```
 ```typescript
+import {ArgsValue} from 'type-config';
 class LoggingConfiguration {
     @ArgsValue('log-level') level: string;
     @ArgsValue('silent') silent: boolean;
@@ -43,16 +46,64 @@ class LoggingConfiguration {
 }
 ```
 ```typescript
+import {JsonConfiguration, JsonValue} from 'type-config';
 @JsonConfiguration(`${__dirname}/config.json`)
 class AuthConfiguration {
     @JsonValue('auth.jwt.issuer') jwtIssuer: string = 'type-config';
     @JsonValue('auth.timestamp') timestamp: Date;
 }
 ```
-##### Run application
+#### Run application
 ```bash
 DB_HOST='127.0.0.1' /
 DB_NAME='type-config' /
 DB_PORT='1234' /
 node app.js --log-level info --silent
+```
+
+## Options
+```typescript
+import {buildDecorators, NodeEnvConfigSource, NodeArgsConfigSource, JsonConfigSource} from 'type-config';
+
+const {Value, EnvValue, ArgsValue, JsonValue} = buildDecorators({
+    /**
+     * Enables validation if true. Throws if config value is invalid.
+     * @default true
+     */
+    validate: true,
+    
+    /**
+     * Throws if value does not exist on source.
+     * @default true
+     */
+    required: true,
+    
+    /**
+     * If true, loads config value when property is accessed.
+     * @default true
+     */
+    lazyLoad: true,
+
+    /**
+     * Do not throw on validation or requirement errors, but logs a warning instead.
+     * @default false
+     */
+    warnOnly: false,
+    
+    /**
+     * Map of decorator key name and config source.
+     * @default {
+                    Value: NodeEnvConfigSource,
+                    EnvValue: NodeEnvConfigSource,
+                    ArgsValue: NodeArgsConfigSource,
+                    JsonValue: JsonConfigSource,
+                }
+     */
+    decoratorMeta: {
+        Value: NodeEnvConfigSource,
+        EnvValue: NodeEnvConfigSource,
+        ArgsValue: NodeArgsConfigSource,
+        JsonValue: JsonConfigSource,
+    }
+})
 ```

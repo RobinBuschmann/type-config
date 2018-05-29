@@ -15,4 +15,8 @@ export const buildDecorators = <T extends DecoratorMeta>(options: Partial<Config
 
 export const {Value, EnvValue, ArgsValue, JsonValue} = buildDecorators();
 
+export {ConfigSource} from './config-source/config-source'
+export {NodeArgsConfigSource} from './config-source/node-args-config-source';
+export {NodeEnvConfigSource} from './config-source/node-env-config-source';
+export {JsonConfigSource} from './config-source/json-config/json-config-source';
 export {JsonConfiguration} from './config-source/json-config/json-configuration';

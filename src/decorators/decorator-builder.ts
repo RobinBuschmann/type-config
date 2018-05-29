@@ -20,10 +20,10 @@ export const buildDecorators =
                         configIdentifierOrOptions: string | ValueDecoratorOptions,
                         additionalTypeOrDeserializer?: any,
                     ): PropertyDecorator => {
-                        const configIdentifier = typeof configIdentifierOrOptions === 'string'
+                        const id = typeof configIdentifierOrOptions === 'string'
                             ? configIdentifierOrOptions
                             : undefined;
-                        const additionalConfigValueOptions = (configIdentifier === undefined
+                        const additionalConfigValueOptions = (id === undefined
                             ? configIdentifierOrOptions
                             : {}) as ValueDecoratorOptions;
                         const additionalType = typeValidator.hasValidator(additionalTypeOrDeserializer)
@@ -40,7 +40,7 @@ export const buildDecorators =
                                 target,
                                 deserializer,
                                 additionalType,
-                                configIdentifier,
+                                id,
                                 typeValidator,
                                 configSource: new decoratorMeta[decoratorKey](configOptions, target),
                                 ...additionalConfigValueOptions,

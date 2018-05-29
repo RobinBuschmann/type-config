@@ -2,7 +2,7 @@ import {AdditionalConfigValueOptions} from '../config-value/config-value-options
 import {BaseConfigOptions} from '../config-options/config-options';
 
 export type ValueDecoratorOptions = (Partial<AdditionalConfigValueOptions> |
-    Partial<BaseConfigOptions>) & {configIdentifier: string;};
+    Partial<BaseConfigOptions>) & {id: string;};
 
 export interface ValueDecorator {
     (options: ValueDecoratorOptions): PropertyDecorator;

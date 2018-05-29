@@ -39,38 +39,82 @@ describe('custom-config', () => {
 
     describe('validate', () => {
 
-        describe('set to false', () => {
+        describe('global options', () => {
 
-            const {CustomValue} = buildDecorators({
-                validate: false,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to false', () => {
+
+                const {CustomValue} = buildDecorators({
+                    validate: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not throw despite of invalidate data', () => {
+                    deserializeStub = stub(CustomSource.prototype, 'deserialize')
+                        .callsFake(() => 1234);
+                    const config = createConfig(CustomValue);
+                    expect(() => config.test).not.to.throw();
+                });
+
             });
 
-            it('should not throw despite of invalidate data', () => {
-                deserializeStub = stub(CustomSource.prototype, 'deserialize')
-                    .callsFake(() => 1234);
-                const config = createConfig(CustomValue);
-                expect(() => config.test).not.to.throw();
+            describe('set to true', () => {
+
+                const {CustomValue} = buildDecorators({
+                    validate: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should throw due to invalid data', () => {
+                    deserializeStub = stub(CustomSource.prototype, 'deserialize')
+                        .callsFake(() => 1234);
+                    const config = createConfig(CustomValue);
+                    expect(() => config.test).to.throw();
+                });
+
             });
 
         });
 
-        describe('set to true', () => {
+        describe('decorator options', () => {
 
-            const {CustomValue} = buildDecorators({
-                validate: true,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to true (globally false)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    validate: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should throw due to invalid data', () => {
+                    deserializeStub = stub(CustomSource.prototype, 'deserialize')
+                        .callsFake(() => 1234);
+                    const config = createConfig(key => CustomValue({id: key, validate: true}));
+                    expect(() => config.test).to.throw();
+                });
+
             });
 
-            it('should not throw despite of invalidate data', () => {
-                deserializeStub = stub(CustomSource.prototype, 'deserialize')
-                    .callsFake(() => 1234);
-                const config = createConfig(CustomValue);
-                expect(() => config.test).to.throw();
+            describe('set to false (globally true)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    validate: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not throw despite of invalid data', () => {
+                    deserializeStub = stub(CustomSource.prototype, 'deserialize')
+                        .callsFake(() => 1234);
+                    const config = createConfig(key => CustomValue({id: key, validate: false}));
+                    expect(() => config.test).to.not.throw();
+                });
+
             });
 
         });
@@ -79,36 +123,78 @@ describe('custom-config', () => {
 
     describe('lazyLoad', () => {
 
-        describe('set to false', () => {
+        describe('global options', () => {
 
-            const {CustomValue} = buildDecorators({
-                lazyLoad: false,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to false', () => {
+
+                const {CustomValue} = buildDecorators({
+                    lazyLoad: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should load values immediately', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
+                    createClass(CustomValue);
+                    expect(getValueStub).to.be.called;
+                });
+
             });
 
-            it('should load values immediately', () => {
-                getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
-                createClass(CustomValue);
-                expect(getValueStub).to.be.called;
+            describe('set to true', () => {
+
+                const {CustomValue} = buildDecorators({
+                    lazyLoad: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not load values', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
+                    createClass(CustomValue);
+                    expect(getValueStub).to.be.not.called;
+                });
+
             });
 
         });
 
-        describe('set to true', () => {
+        describe('decorator options', () => {
 
-            const {CustomValue} = buildDecorators({
-                lazyLoad: true,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to true (globally false)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    lazyLoad: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not load values', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
+                    createClass(key => CustomValue({id: key, lazyLoad: true}));
+                    expect(getValueStub).not.to.be.called;
+                });
+
             });
 
-            it('should load values immediately', () => {
-                getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
-                createClass(CustomValue);
-                expect(getValueStub).to.be.not.called;
+            describe('set to false (globally true)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    lazyLoad: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should load values immediately', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => 'some-value');
+                    createClass(key => CustomValue({id: key, lazyLoad: false}));
+                    expect(getValueStub).to.be.called;
+                });
+
             });
 
         });
@@ -117,36 +203,78 @@ describe('custom-config', () => {
 
     describe('required', () => {
 
-        describe('set to false', () => {
+        describe('global options', () => {
 
-            const {CustomValue} = buildDecorators({
-                required: false,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to false', () => {
+
+                const {CustomValue} = buildDecorators({
+                    required: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not throw even if value is not defined', () => {
+                    stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
+                    const config = createConfig(CustomValue);
+                    expect(() => config.test).not.to.throw();
+                });
+
             });
 
-            it('should not throw even if value is not defined', () => {
-                stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
-                const config = createConfig(CustomValue);
-                expect(() => config.test).not.to.throw();
+            describe('set to true', () => {
+
+                const {CustomValue} = buildDecorators({
+                    required: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should throw if value is not defined', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
+                    const config = createConfig(CustomValue);
+                    expect(() => config.test).to.throw();
+                });
+
             });
 
         });
 
-        describe('set to true', () => {
+        describe('decorator options', () => {
 
-            const {CustomValue} = buildDecorators({
-                required: true,
-                decoratorMeta: {
-                    CustomValue: CustomSource,
-                },
+            describe('set to true (globally false)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    required: false,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should throw if value is not defined', () => {
+                    getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
+                    const config = createConfig(key => CustomValue({id: key, required: true}));
+                    expect(() => config.test).to.throw();
+                });
+
             });
 
-            it('should throw if value is not defined', () => {
-                getValueStub = stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
-                const config = createConfig(CustomValue);
-                expect(() => config.test).to.throw();
+            describe('set to false (globally true)', () => {
+
+                const {CustomValue} = buildDecorators({
+                    required: true,
+                    decoratorMeta: {
+                        CustomValue: CustomSource,
+                    },
+                });
+
+                it('should not throw even if value is not defined', () => {
+                    stub(CustomSource.prototype, 'getValue').callsFake(() => undefined);
+                    const config = createConfig(key => CustomValue({id: key, required: false}));
+                    expect(() => config.test).not.to.throw();
+                });
+
             });
 
         });
