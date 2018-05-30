@@ -7,7 +7,14 @@ export type DecoratorMeta = {
     [decoratorKey: string]: ConfigSourceType;
 };
 
-export const defaultDecoratorMeta = {
+export interface DefaultDecoratorMeta extends DecoratorMeta {
+    Value: typeof NodeEnvConfigSource;
+    EnvValue: typeof NodeEnvConfigSource;
+    ArgsValue: typeof NodeArgsConfigSource;
+    JsonValue: typeof JsonConfigSource;
+}
+
+export const defaultDecoratorMeta: DefaultDecoratorMeta = {
     Value: NodeEnvConfigSource,
     EnvValue: NodeEnvConfigSource,
     ArgsValue: NodeArgsConfigSource,

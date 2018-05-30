@@ -1,4 +1,4 @@
-declare class _BaseError extends Error {
+export declare class _BaseError extends Error {
     constructor(message: string);
 }
 

@@ -4,7 +4,7 @@ import {ConfigValue} from '../config-value/config-value';
 import {DecoratorMeta} from './decorator-meta';
 import {ValueDecorator, ValueDecoratorOptions} from './value-decorator';
 
-type ValueDecorators<T> = {
+export type ValueDecorators<T> = {
     [K in keyof T]: ValueDecorator;
 }
 

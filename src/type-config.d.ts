@@ -1,0 +1,15 @@
+import { ConfigOptions } from './config-options/config-options';
+import { ValueDecorators } from './decorators/decorator-builder';
+import { DecoratorMeta, DefaultDecoratorMeta } from './decorators/decorator-meta';
+import { ValueDecorator } from './decorators/value-decorator';
+export declare const buildDecorators: <T extends DecoratorMeta>(options?: Partial<ConfigOptions<T>>) => ValueDecorators<T & DefaultDecoratorMeta>;
+export declare const Value: ValueDecorator;
+export declare const EnvValue: ValueDecorator;
+export declare const ArgsValue: ValueDecorator;
+export declare const JsonValue: ValueDecorator;
+export { ValueDecorators } from './decorators/decorator-builder';
+export { ConfigSource } from './config-source/config-source';
+export { NodeArgsConfigSource } from './config-source/node-args-config-source';
+export { NodeEnvConfigSource } from './config-source/node-env-config-source';
+export { JsonConfigSource } from './config-source/json-config/json-config-source';
+export { JsonConfiguration } from './config-source/json-config/json-configuration';

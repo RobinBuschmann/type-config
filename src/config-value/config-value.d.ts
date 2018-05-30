@@ -1,0 +1,32 @@
+import { Logger } from '../config-options/config-options';
+import { ConfigSource } from '../config-source/config-source';
+import { TypeValidator } from '../validation/type-validator';
+import { ConfigValueOptions, Deserializer } from './config-value-options';
+export declare class ConfigValue implements ConfigValueOptions {
+    value: any;
+    rawValue: any;
+    type: any;
+    defaultValue: any;
+    validate: boolean;
+    lazyLoad: boolean;
+    required: boolean;
+    warnOnly: boolean;
+    logger: Logger;
+    isLoaded: boolean;
+    target: any;
+    additionalType: any | undefined;
+    deserializer: Deserializer | undefined;
+    propertyKey: string | symbol;
+    typeValidator: TypeValidator;
+    id: string;
+    configSource: ConfigSource;
+    constructor(options: ConfigValueOptions);
+    private initTargetPropertyGettersAndSetters();
+    private setDefaultAndValueForStaticMembers();
+    private loadAndValidateValue();
+    private loadValue();
+    private validateValue();
+    private setDefaultWhenValueIsUndefined();
+    private shadowValueIfNotAlreadyShadowed(instance);
+    private loadType();
+}

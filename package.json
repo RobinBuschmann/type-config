@@ -12,10 +12,9 @@
   "homepage": "https://github.com/RobinBuschmann/type-config#readme",
   "scripts": {
     "build": "tsc",
-    "build-publish": "tsc --p tsconfig.publish.json",
     "test": "mocha",
     "cover": "nyc mocha",
-    "prepublish": "npm run build-publish"
+    "preversion": "npm run build"
   },
   "nyc": {
     "lines": 70,

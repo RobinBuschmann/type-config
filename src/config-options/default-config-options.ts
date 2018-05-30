@@ -1,7 +1,8 @@
-import {defaultDecoratorMeta} from '../decorators/decorator-meta';
+import {DefaultDecoratorMeta, defaultDecoratorMeta} from '../decorators/decorator-meta';
 import {TypeValidator} from '../validation/type-validator';
+import {ConfigOptions} from './config-options';
 
-export const defaultConfigOptions = {
+export const defaultConfigOptions: ConfigOptions<DefaultDecoratorMeta> = {
     validate: true,
     required: true,
     lazyLoad: true,
