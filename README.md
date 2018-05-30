@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/RobinBuschmann/type-config.svg?branch=master)](https://travis-ci.org/RobinBuschmann/type-config)
+[![codecov](https://codecov.io/gh/RobinBuschmann/type-config/branch/master/graph/badge.svg)](https://codecov.io/gh/RobinBuschmann/type-config)
+
 # type-config
 Type safe way defining configurations fed by environment variables, process arguments or json config files 
 (including deserialization and validation).
