@@ -55,22 +55,39 @@ describe('node-args-config', () => {
         };
         loadProcessArgvs(db);
 
-        class DatabaseConfig {
-            @ArgsValue(db.host.key) host: string;
-            @ArgsValue(db.logging.key) logging: boolean;
-            @ArgsValue(db.warning.key) warning: boolean;
-            @ArgsValue(db.name.key) name: string;
-            @ArgsValue(db.port.key) port: number;
-            @ArgsValue(db.username.key) username: string;
-            @ArgsValue(db.password.key) password: string;
-            @ArgsValue(db.poolIds.key, Number) poolIds: number[];
-
-            // invalid
-            @ArgsValue(db.host.key) hostNumber: number;
-            @ArgsValue(db.poolIds.key) poolIdStrings: number;
+        interface DatabaseConfigContract {
+            host: string;
+            name: string;
+            port: number;
+            logging: boolean;
+            warning: boolean;
+            username: string;
+            password: string;
+            poolIds: number[];
+            poolIdStrings: number;
+            hostNumber: number;
         }
 
-        const databaseConfig = new DatabaseConfig();
+        let databaseConfig: DatabaseConfigContract;
+
+        before(() => {
+            class DatabaseConfig implements DatabaseConfigContract {
+                @ArgsValue(db.host.key) host: string;
+                @ArgsValue(db.logging.key) logging: boolean;
+                @ArgsValue(db.warning.key) warning: boolean;
+                @ArgsValue(db.name.key) name: string;
+                @ArgsValue(db.port.key) port: number;
+                @ArgsValue(db.username.key) username: string;
+                @ArgsValue(db.password.key) password: string;
+                @ArgsValue(db.poolIds.key, Number) poolIds: number[];
+
+                // invalid
+                @ArgsValue(db.host.key) hostNumber: number;
+                @ArgsValue(db.poolIds.key) poolIdStrings: number;
+            }
+
+            databaseConfig = new DatabaseConfig();
+        });
 
         it('should be able to load all values with correct type', () => {
 

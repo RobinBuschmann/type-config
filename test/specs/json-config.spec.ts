@@ -12,20 +12,35 @@ describe('json-config', () => {
 
     describe('proper configuration', () => {
 
-        @JsonConfiguration(JSON_CONFIG_PATH)
-        class DatabaseConfig {
-            @JsonValue('database.host') host: string;
-            @JsonValue('database.name') name: string;
-            @JsonValue('database.port') port: number;
-            @JsonValue('database.username') username: string;
-            @JsonValue('database.password') password: string;
-            @JsonValue('database.poolIds', Number) poolIds: number[];
-
-            // invalid
-            @JsonValue('database.host') hostNumber: number;
-            @JsonValue('database.poolIds') poolIdStrings: string;
+        interface DatabaseConfigContract {
+            host: string;
+            name: string;
+            port: number;
+            username: string;
+            password: string;
+            poolIds: number[];
+            hostNumber: number;
+            poolIdStrings: string;
         }
-        const databaseConfig = new DatabaseConfig();
+
+        let databaseConfig: DatabaseConfigContract;
+
+        before(() => {
+            @JsonConfiguration(JSON_CONFIG_PATH)
+            class DatabaseConfig implements DatabaseConfigContract {
+                @JsonValue('database.host') host: string;
+                @JsonValue('database.name') name: string;
+                @JsonValue('database.port') port: number;
+                @JsonValue('database.username') username: string;
+                @JsonValue('database.password') password: string;
+                @JsonValue('database.poolIds', Number) poolIds: number[];
+
+                // invalid
+                @JsonValue('database.host') hostNumber: number;
+                @JsonValue('database.poolIds') poolIdStrings: string;
+            }
+            databaseConfig = new DatabaseConfig();
+        });
 
         it('should be able to load all values with correct type', () => {
 
@@ -92,15 +107,15 @@ describe('json-config', () => {
         const TEST_BLA_PATH = 'test.bla';
         const DATABASE_PORT_TEST_PATH = 'database.port.test';
 
-        @JsonConfiguration(JSON_CONFIG_PATH)
-        class TestConfig {
-            @JsonValue(TEST_BLA_PATH) bla: string;
-            @JsonValue(DATABASE_PORT_TEST_PATH) test: string;
-        }
-
-        const testConfig = new TestConfig();
-
         it('should throw due to loading from non existing config properties', () => {
+            @JsonConfiguration(JSON_CONFIG_PATH)
+            class TestConfig {
+                @JsonValue(TEST_BLA_PATH) bla: string;
+                @JsonValue(DATABASE_PORT_TEST_PATH) test: string;
+            }
+
+            const testConfig = new TestConfig();
+
             expect(() => testConfig.bla).to
                 .throw(ValueMissingError, `Value of config key "${TEST_BLA_PATH}" is missing on TestConfig.bla`);
             expect(() => testConfig.test).to

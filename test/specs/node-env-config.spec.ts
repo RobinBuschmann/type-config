@@ -41,26 +41,51 @@ describe('node-env-config', () => {
                     return this.value.join(',')
                 },
             },
+            json: {
+                key: 'SOME_JSON', value: {test: 'hello world'}, toString() {
+                    return JSON.stringify(this.value);
+                },
+            },
         };
         loadProcessEnvs(db);
 
-        class DatabaseConfig {
-            @EnvValue(db.host.key) host: string;
-            @EnvValue(db.name.key) name: string;
-            @EnvValue(db.port.key) port: number;
-            @EnvValue(db.username.key) username: string;
-            @EnvValue(db.password.key) password: string;
-            @EnvValue(db.poolIds.key, Number) poolIds: number[];
-
-            // invalid
-            @EnvValue(db.host.key) hostNumber: number;
-            @EnvValue(db.poolIds.key) poolIdStrings: number;
-
-            @EnvValue(db.host.key) static host: string;
-            @EnvValue(db.poolIds.key, Number) static poolIds: number[];
+        interface DatabaseConfigContract {
+            host: string;
+            name: string;
+            port: number;
+            username: string;
+            password: string;
+            poolIds: number[];
+            poolIdStrings: number;
+            hostNumber: number;
+            json: any;
         }
 
-        const databaseConfig = new DatabaseConfig();
+        let DatabaseConfig: {host: string, poolIds: number[]};
+        let databaseConfig: DatabaseConfigContract;
+
+        before(() => {
+            class _DatabaseConfig implements DatabaseConfigContract {
+                @EnvValue(db.host.key) host: string;
+                @EnvValue(db.name.key) name: string;
+                @EnvValue(db.port.key) port: number;
+                @EnvValue(db.username.key) username: string;
+                @EnvValue(db.password.key) password: string;
+                @EnvValue(db.poolIds.key, Number) poolIds: number[];
+
+                @EnvValue(db.json.key, Object) json: any;
+
+                // invalid
+                @EnvValue(db.host.key) hostNumber: number;
+                @EnvValue(db.poolIds.key) poolIdStrings: number;
+
+                @EnvValue(db.host.key) static host: string;
+                @EnvValue(db.poolIds.key, Number) static poolIds: number[];
+            }
+
+            DatabaseConfig = _DatabaseConfig;
+            databaseConfig = new _DatabaseConfig();
+        });
 
         it('should be able to load all values with correct type', () => {
             expect(databaseConfig.host).to.eql(db.host.value);
@@ -81,6 +106,9 @@ describe('node-env-config', () => {
             expect(databaseConfig.poolIds).to.eql(db.poolIds.value);
             expect(databaseConfig.poolIds).to.be.an('array');
             expect(databaseConfig.poolIds[0]).to.be.a('number');
+
+            expect(databaseConfig.json).to.eql(db.json.value);
+            expect(databaseConfig.json).to.be.an('object');
         });
 
         it('should throw validation errors', () => {

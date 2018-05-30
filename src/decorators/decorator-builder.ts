@@ -26,14 +26,16 @@ export const buildDecorators =
                         const additionalConfigValueOptions = (id === undefined
                             ? configIdentifierOrOptions
                             : {}) as ValueDecoratorOptions;
-                        const additionalType = typeValidator.hasValidator(additionalTypeOrDeserializer)
-                            ? additionalTypeOrDeserializer
-                            : undefined;
-                        const deserializer = !additionalType && typeof additionalTypeOrDeserializer === 'function'
-                            ? additionalTypeOrDeserializer
-                            : undefined;
 
                         return (target, propertyKey) => {
+                            const configSource = new decoratorMeta[decoratorKey](configOptions, target);
+                            const additionalType = configSource.hasDeserializer(additionalTypeOrDeserializer)
+                                ? additionalTypeOrDeserializer
+                                : undefined;
+                            const deserializer = !additionalType && typeof additionalTypeOrDeserializer === 'function'
+                                ? additionalTypeOrDeserializer
+                                : undefined;
+
                             new ConfigValue({
                                 ...configValueOptions,
                                 propertyKey,
@@ -42,7 +44,7 @@ export const buildDecorators =
                                 additionalType,
                                 id,
                                 typeValidator,
-                                configSource: new decoratorMeta[decoratorKey](configOptions, target),
+                                configSource,
                                 ...additionalConfigValueOptions,
                             })
                         }

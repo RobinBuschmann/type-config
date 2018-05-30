@@ -32,6 +32,10 @@ export abstract class ConfigSource {
 
     abstract getValue(identifier: string): string | undefined;
 
+    hasDeserializer(type) {
+        return this.typeDeserializerMap.has(type);
+    }
+
     deserialize(type: any,
                 value: string,
                 additionalType?: any) {
