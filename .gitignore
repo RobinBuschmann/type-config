@@ -10,6 +10,7 @@ node_modules
 # build files
 **/*.js
 **/*.js.map
+**/*.d.ts
 
 # logs
 npm-debug.log
@@ -18,3 +19,4 @@ npm-debug.log
 coverage
 .nyc_output
 !test/mocha.tsnode.js
+!test/declarations.d.ts
