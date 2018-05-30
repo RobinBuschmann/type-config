@@ -1,5 +1,5 @@
 {
-  "name": "type-config",
+  "name": "type-env",
   "version": "1.0.0",
   "description": "Type safe way defining configurations fed by environment variables, process arguments or json config files (including deserialization and validation)",
   "main": "index.js",

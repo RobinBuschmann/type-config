@@ -1,15 +1,15 @@
 [![Build Status](https://travis-ci.org/RobinBuschmann/type-config.svg?branch=master)](https://travis-ci.org/RobinBuschmann/type-config)
 [![codecov](https://codecov.io/gh/RobinBuschmann/type-config/branch/master/graph/badge.svg)](https://codecov.io/gh/RobinBuschmann/type-config)
 
-# type-config
+# type-env
 Type safe way defining configurations fed by environment variables, process arguments or json config files 
 (including deserialization and validation).
 
 ## Installation
 ```bash
-npm install type-config --save
+npm install type-env --save
 ```
-*type-config* requires [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
+*type-env* requires [reflect-metadata](https://www.npmjs.com/package/reflect-metadata)
 ```
 npm install reflect-metadata --save
 ```
@@ -24,7 +24,7 @@ Your `tsconfig.json` needs the following flags:
 ## Getting started
 #### Setup configuration class
 ```typescript
-import {EnvValue} from 'type-config';
+import {EnvValue} from 'type-env';
 class DataBaseConfiguration {
     @EnvValue('DB_HOST') host: string = 'localhost';
     @EnvValue('DB_NAME') name: string;
@@ -32,7 +32,7 @@ class DataBaseConfiguration {
 }
 ```
 ```typescript
-import {ArgsValue} from 'type-config';
+import {ArgsValue} from 'type-env';
 class LoggingConfiguration {
     @ArgsValue('log-level') level: string;
     @ArgsValue('silent') silent: boolean;
@@ -42,31 +42,31 @@ class LoggingConfiguration {
 {
   "auth": {
     "jwt": {
-      "issuer": "type-config"
+      "issuer": "type-env"
     },
     "timestamp": "2018-05-27T17:35:54.391Z"
   }
 }
 ```
 ```typescript
-import {JsonConfiguration, JsonValue} from 'type-config';
+import {JsonConfiguration, JsonValue} from 'type-env';
 @JsonConfiguration(`${__dirname}/config.json`)
 class AuthConfiguration {
-    @JsonValue('auth.jwt.issuer') jwtIssuer: string = 'type-config';
+    @JsonValue('auth.jwt.issuer') jwtIssuer: string = 'type-env';
     @JsonValue('auth.timestamp') timestamp: Date;
 }
 ```
 #### Run application
 ```bash
 DB_HOST='127.0.0.1' /
-DB_NAME='type-config' /
+DB_NAME='type-env' /
 DB_PORT='1234' /
 node app.js --log-level info --silent
 ```
 
 ## Options
 ```typescript
-import {buildDecorators, NodeEnvConfigSource, NodeArgsConfigSource, JsonConfigSource} from 'type-config';
+import {buildDecorators, NodeEnvConfigSource, NodeArgsConfigSource, JsonConfigSource} from 'type-env';
 
 const {Value, EnvValue, ArgsValue, JsonValue} = buildDecorators({
     /**
