@@ -1,5 +1,5 @@
 import {ConfigSource} from '../config-source';
-import {JSON_SOURCE_FILEPATH_META_KEY} from './json-configuration';
+import {JSON_SOURCE_FILEPATH_META_KEY} from './json-config';
 import {JsonConfigDecoratorMissingError} from './json-config-decorator-missing-error';
 import {JsonConfigDecoratorFilepathError} from './json-config-decorator-filepath-error';
 import {AnyConfigOptions} from '../../config-options/config-options';

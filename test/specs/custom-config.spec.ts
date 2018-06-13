@@ -1,7 +1,7 @@
 import {use, expect} from 'chai';
 import {SinonStub, stub} from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import {buildDecorators} from '../../src/type-config';
+import {buildDecorators, Config} from '../../src/type-config';
 import {ConfigSource} from '../../src/config-source/config-source';
 
 use(sinonChai);
@@ -17,11 +17,12 @@ describe('custom-config', () => {
     }
 
     const createClass = Value => {
-        class Config {
+        @Config
+        class TestConfig {
             @Value('some-identifier') test?: string;
         }
 
-        return Config;
+        return TestConfig;
     };
     const createConfig = Value => {
         const Config = createClass(Value);

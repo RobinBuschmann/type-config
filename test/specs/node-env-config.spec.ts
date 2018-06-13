@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {EnvValue} from '../../';
+import {Config, EnvValue} from '../../';
 import {ValidationError} from '../../src/validation/validation-error';
 
 describe('node-env-config', () => {
@@ -65,6 +65,7 @@ describe('node-env-config', () => {
         let databaseConfig: DatabaseConfigContract;
 
         before(() => {
+            @Config
             class _DatabaseConfig implements DatabaseConfigContract {
                 @EnvValue(db.host.key) host: string;
                 @EnvValue(db.name.key) name: string;
@@ -159,6 +160,7 @@ describe('node-env-config', () => {
             };
             loadProcessEnvs(auth);
 
+            @Config
             class AuthConfig {
                 @EnvValue(auth.jwtExpiry.key) jwtExpiry: Date = auth.jwtExpiry.default;
                 @EnvValue(nonSetEnvAuthVariables.authTokens.key) authTokens: string[] =

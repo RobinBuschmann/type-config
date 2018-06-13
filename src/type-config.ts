@@ -21,9 +21,11 @@ export const EnvValue: ValueDecorator = decorators.EnvValue;
 export const ArgsValue: ValueDecorator = decorators.ArgsValue;
 export const JsonValue: ValueDecorator = decorators.JsonValue;
 
+export {Config} from './decorators/config';
+
 export {ValueDecorators} from './decorators/decorator-builder';
 export {ConfigSource} from './config-source/config-source'
 export {NodeArgsConfigSource} from './config-source/node-args-config-source';
 export {NodeEnvConfigSource} from './config-source/node-env-config-source';
 export {JsonConfigSource} from './config-source/json-config/json-config-source';
-export {JsonConfiguration} from './config-source/json-config/json-configuration';
+export {JsonConfig} from './config-source/json-config/json-config';

@@ -43,8 +43,7 @@
     "report-dir": "./coverage"
   },
   "dependencies": {
-    "@types/node": "^10.1.0",
-    "@types/reflect-metadata": "^0.1.0"
+    "@types/node": "^10.1.0"
   },
   "devDependencies": {
     "@types/chai": "^4.1.3",

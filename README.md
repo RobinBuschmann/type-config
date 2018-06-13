@@ -24,15 +24,17 @@ Your `tsconfig.json` needs the following flags:
 ## Getting started
 #### Setup configuration class
 ```typescript
-import {EnvValue} from 'type-env';
+import {Config, EnvValue} from 'type-env';
+@Config
 class DataBaseConfiguration {
-    @EnvValue('DB_HOST') host: string = 'localhost';
+    @EnvValue('DB_HOST') host: string = 'localhost'; // default value
     @EnvValue('DB_NAME') name: string;
     @EnvValue('DB_PORT') port: number;
 }
 ```
 ```typescript
-import {ArgsValue} from 'type-env';
+import {Config, ArgsValue} from 'type-env';
+@Config
 class LoggingConfiguration {
     @ArgsValue('log-level') level: string;
     @ArgsValue('silent') silent: boolean;
@@ -49,7 +51,8 @@ class LoggingConfiguration {
 }
 ```
 ```typescript
-import {JsonConfiguration, JsonValue} from 'type-env';
+import {Config, JsonConfiguration, JsonValue} from 'type-env';
+@Config
 @JsonConfiguration(`${__dirname}/config.json`)
 class AuthConfiguration {
     @JsonValue('auth.jwt.issuer') jwtIssuer: string = 'type-env';

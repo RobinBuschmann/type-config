@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {buildDecorators, JsonConfiguration, JsonValue} from '../../';
+import {buildDecorators, Config, JsonConfig, JsonValue} from '../../';
 import config = require('../assets/config.json');
 import {JsonConfigDecoratorMissingError} from '../../src/config-source/json-config/json-config-decorator-missing-error';
 import {JsonConfigDecoratorFilepathError} from '../../src/config-source/json-config/json-config-decorator-filepath-error';
@@ -26,7 +26,8 @@ describe('json-config', () => {
         let databaseConfig: DatabaseConfigContract;
 
         before(() => {
-            @JsonConfiguration(JSON_CONFIG_PATH)
+            @Config
+            @JsonConfig(JSON_CONFIG_PATH)
             class DatabaseConfig implements DatabaseConfigContract {
                 @JsonValue('database.host') host: string;
                 @JsonValue('database.name') name: string;
@@ -77,6 +78,7 @@ describe('json-config', () => {
     describe('JsonConfiguration decorator', () => {
 
         it('should throw due to missing decorator', () => {
+            @Config
             class DatabaseConfig {
                 @JsonValue('database.host') host: string;
             }
@@ -88,7 +90,8 @@ describe('json-config', () => {
         });
 
         it('should throw wrong json config path', () => {
-            @JsonConfiguration('./wrong-path')
+            @Config
+            @JsonConfig('./wrong-path')
             class DatabaseConfig {
                 @JsonValue('database.host') host: string;
             }
@@ -108,7 +111,8 @@ describe('json-config', () => {
         const DATABASE_PORT_TEST_PATH = 'database.port.test';
 
         it('should throw due to loading from non existing config properties', () => {
-            @JsonConfiguration(JSON_CONFIG_PATH)
+            @Config
+            @JsonConfig(JSON_CONFIG_PATH)
             class TestConfig {
                 @JsonValue(TEST_BLA_PATH) bla: string;
                 @JsonValue(DATABASE_PORT_TEST_PATH) test: string;
@@ -132,7 +136,8 @@ describe('json-config', () => {
 
             it('should throw due to lazyLoad is false', () => {
                 expect(() => {
-                    @JsonConfiguration(JSON_CONFIG_PATH)
+                    @Config
+                    @JsonConfig(JSON_CONFIG_PATH)
                     class DatabaseConfig {
                         @JsonValue('database.host') host: string;
                     }

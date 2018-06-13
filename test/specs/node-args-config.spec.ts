@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {ArgsValue} from '../../';
+import {ArgsValue, Config} from '../../';
 import {ValidationError} from '../../src/validation/validation-error';
 
 describe('node-args-config', () => {
@@ -71,6 +71,7 @@ describe('node-args-config', () => {
         let databaseConfig: DatabaseConfigContract;
 
         before(() => {
+            @Config
             class DatabaseConfig implements DatabaseConfigContract {
                 @ArgsValue(db.host.key) host: string;
                 @ArgsValue(db.logging.key) logging: boolean;
